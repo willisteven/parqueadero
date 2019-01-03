@@ -16,6 +16,8 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
+
 
 group = 'com.ceiba'
 version = '0.0.1-SNAPSHOT'
@@ -33,4 +35,22 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 		// https://mvnrepository.com/artifact/mysql/mysql-connector-java
 		compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.44'
+		testCompile('org.springframework.boot:spring-boot-starter-test')
+	testImplementation 'junit:junit:4.12'
+	testCompile 'org.mockito:mockito-all:1.10.19'
+	compile files('libs/trm.jar')
+	compile fileTree(dir: 'libs', include: '*.jar')
+	testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
+	
+	task listJars << {
+    configurations.compile.each { File file -> println file.name }
+}
+
+test {
+jacoco {
+append = false
+destinationFile = file("build/jacoco/test.exec")
+}
+reports.junitXml.destination =  file("build/jacoco/test-results")
+}
 }
