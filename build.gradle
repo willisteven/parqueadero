@@ -35,6 +35,7 @@ dependencies {
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
 		// https://mvnrepository.com/artifact/mysql/mysql-connector-java
 		compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.44'
+			runtime('mysql:mysql-connector-java')
 		testCompile('org.springframework.boot:spring-boot-starter-test')
 	testImplementation 'junit:junit:4.12'
 	testCompile 'org.mockito:mockito-all:1.10.19'
