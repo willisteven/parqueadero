@@ -67,5 +67,4 @@ public class Vehiculo implements Serializable {
 	public void setCilindraje(int cilindraje) {
 		this.cilindraje = cilindraje;
 	}
-
 }
