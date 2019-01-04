@@ -28,21 +28,22 @@ repositories {
 }
 
 
+
 dependencies {
-	implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-	implementation('org.springframework.boot:spring-boot-starter-web')
-	runtimeOnly('com.h2database:h2')
-	testImplementation('org.springframework.boot:spring-boot-starter-test')
-		// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.boot:spring-boot-starter-jersey')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	compile group: 'com.googlecode.json-simple', name: 'json-simple', version:'1.1.1'
 	runtime('mysql:mysql-connector-java')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testImplementation 'junit:junit:4.12'
 	testCompile 'org.mockito:mockito-all:1.10.19'
 	compile fileTree(dir: 'libs', include: '*.jar')
 	testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
-    compile group: 'com.googlecode.json-simple', name: 'json-simple', version:'1.1.1'
-	
-	task listJars << {
+}
+
+task listJars << {
     configurations.compile.each { File file -> println file.name }
 }
 
@@ -52,5 +53,4 @@ append = false
 destinationFile = file("build/jacoco/test.exec")
 }
 reports.junitXml.destination =  file("build/jacoco/test-results")
-}
 }
