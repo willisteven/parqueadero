@@ -26,19 +26,22 @@ public class TipoVehiculo  implements Serializable{
 	@Column(name ="descripcion" , nullable= false )
 	private String descripcion;
 	
-	public TipoVehiculo(int idTipoVehiculo, String tipo, String descripcion) {
-		super();
-		this.idTipoVehiculo = idTipoVehiculo;
-		this.tipo = tipo;
-		this.descripcion = descripcion;
+	public TipoVehiculo() {
+		
 	}
-
+	
 	public int getIdTipoVehiculo() {
 		return idTipoVehiculo;
 	}
 
 	public void setIdTipoVehiculo(int idTipoVehiculo) {
 		this.idTipoVehiculo = idTipoVehiculo;
+	}
+
+	public TipoVehiculo(String tipo, String descripcion) {
+		super();
+		this.tipo = tipo;
+		this.descripcion = descripcion;
 	}
 
 	public String getTipo() {

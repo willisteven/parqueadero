@@ -4,11 +4,8 @@ import com.ceiba.parqueadero.models.entity.Vehiculo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class VehiculoDto {
-	@JsonProperty("placa")
 	  private String placa;
-	  @JsonProperty("tipo")
 	  private String tipo;
-	  @JsonProperty("cilindraje")
 	  private int cilindraje;
 	  
 	  public VehiculoDto() {}

@@ -5,10 +5,10 @@ import org.springframework.stereotype.Service;
 
 import com.ceiba.parqueadero.models.dao.IPrecioDao;
 import com.ceiba.parqueadero.models.entity.Precio;
-import com.ceiba.parqueadero.models.serviceInt.IPrecio;
+import com.ceiba.parqueadero.models.serviceInt.IPrecioService;
 
 @Service
-public class PrecioServiceImpl implements IPrecio{
+public class PrecioServiceImpl implements IPrecioService{
 
 	@Autowired
 	private IPrecioDao precioDao;

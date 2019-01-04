@@ -13,6 +13,7 @@ import com.ceiba.parqueadero.models.entity.Vehiculo;
 import com.ceiba.parqueadero.models.serviceInt.IVigilanteService;
 import com.ceiba.parqueadero.util.RespuestaJson;
 
+import org.json.simple.JSONObject;
 
 @RestController
 @RequestMapping("/api")
@@ -22,13 +23,13 @@ public class VigilanteRestController {
 	private IVigilanteService vigilanteService;
 	
 	@PostMapping(path = "/registroVehiculo", consumes = "application/json", produces = "application/json")
-	public RespuestaJson realizarIngreso(@RequestBody Vehiculo vehiculo){
+	public RespuestaJson realizarIngreso(@RequestBody JSONObject vehiculo){
 		
 		return vigilanteService.realizarRegistroVehiculo(vehiculo);
 }
 	
 	@PostMapping(path = "/salidaVehiculo", consumes = "application/json", produces = "application/json")
-	public RespuestaJson realizarSalida(@RequestBody Vehiculo vehiculo){
+	public RespuestaJson realizarSalida(@RequestBody JSONObject vehiculo){
 		return vigilanteService.realizarSalidaVehiculo(vehiculo);
 }
 
