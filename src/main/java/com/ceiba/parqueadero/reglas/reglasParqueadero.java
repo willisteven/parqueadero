@@ -1,8 +1,11 @@
 package com.ceiba.parqueadero.reglas;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import com.ceiba.parqueadero.models.entity.Vehiculo;
 
-public class reglasParqueadero {
+public class ReglasParqueadero {
 
 	/**
 	 * Metodo que valida el tipo de vehiculo que es permitido en el parqueadero
@@ -31,6 +34,34 @@ public class reglasParqueadero {
 		}
 		return flag;
 	}
+	
+	
+	/**
+	 * Metodo que valida los dias permitidos para las
+	 * placas que comienzan por la letra A.
+	 * 
+	 * @param placa
+	 * @return
+	 */
+	public boolean validarPlacaLunesDomingos(String placa) {
+
+		boolean isAutorizado = true;
+		String letraUp = placa.toUpperCase().substring(0, 1);
+		if (letraUp.equals("A")) {
+			Calendar fechaPrestamo = Calendar.getInstance();
+			fechaPrestamo.setTime(new Date());
+			if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+					|| fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+				isAutorizado = false;
+			} else {
+				isAutorizado = true;
+			}
+		}
+		return isAutorizado;
+	}
+	
+	
+
 	
 	
 	

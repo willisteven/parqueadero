@@ -34,6 +34,8 @@ public class Vehiculo implements Serializable {
 	@Column(name = "cilindraje" , nullable= true)
 	private int cilindraje;
 	
+	@Column(name = "Activo")
+	private int activo;
 
 	public Vehiculo(int idVehiculo, String placa, TipoVehiculo idTipoVehiculo, int cilindraje) {
 		super();
