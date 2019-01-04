@@ -1,5 +1,6 @@
 package com.ceiba.parqueadero.models.services;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,15 +8,14 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
 import com.ceiba.parqueadero.models.entity.Registro;
 import com.ceiba.parqueadero.models.entity.TipoVehiculo;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
-import com.ceiba.parqueadero.models.serviceInt.IPrecioService;
-import com.ceiba.parqueadero.models.serviceInt.IRegistroService;
-import com.ceiba.parqueadero.models.serviceInt.ITipoVehiculoService;
-import com.ceiba.parqueadero.models.serviceInt.IVehiculoService;
-import com.ceiba.parqueadero.models.serviceInt.IVigilanteService;
+import com.ceiba.parqueadero.models.serviceint.IPrecioService;
+import com.ceiba.parqueadero.models.serviceint.IRegistroService;
+import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.IVigilanteService;
 import com.ceiba.parqueadero.models.entity.Precio;
 import com.ceiba.parqueadero.reglas.ReglasParqueadero;
 import com.ceiba.parqueadero.util.RespuestaJson;
@@ -24,7 +24,7 @@ import com.ceiba.parqueadero.util.RespuestaJson;
 public class VigilanteServiceImpl implements IVigilanteService {
 
 	ReglasParqueadero reglasParqueadero = new ReglasParqueadero();
-	public final int estado = 1;
+	public static final int ESTADO = 1;
 
 	@Autowired
 	private IRegistroService registroService;
@@ -34,7 +34,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	@Autowired
 	private IPrecioService precioService;
-	
+
 	@Autowired
 	private ITipoVehiculoService tipoVehiculoService;
 
@@ -45,7 +45,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 			vehiculo = this.createVehiculoFromJson(vehiculojs);
 
 			List<Vehiculo> listVehiculos = vehiculoService
-					.buscarPorTipoVehiculoActivo(vehiculo.getIdTipoVehiculo().getTipo(), estado);
+					.buscarPorTipoVehiculoActivo(vehiculo.getIdTipoVehiculo().getTipo(), ESTADO);
 			if (this.reglasParqueadero.permiteTipoVehiculo(vehiculo)) {
 				if (this.reglasParqueadero.disponibilidadVehiculo(listVehiculos.size(),
 						vehiculo.getIdTipoVehiculo().getTipo())) {
@@ -78,16 +78,10 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		String placa = vehiculoJs.get("placa").toString();
 		int cilindraje = (int) vehiculoJs.get("cilindraje");
 
-		TipoVehiculo tipoVehiculo = new TipoVehiculo();
-		tipoVehiculo= this.tipoVehiculoService.consultarTipoVehiculo(tipo);
-		
+		TipoVehiculo tipoVehiculo;
+		tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
 
-		if (tipo == "moto") {
-			vehiculo = new Vehiculo(placa, tipoVehiculo, cilindraje);
-
-		} else {
-			vehiculo = new Vehiculo(placa, tipoVehiculo, cilindraje);
-		}
+		vehiculo = new Vehiculo(placa, tipoVehiculo, cilindraje);
 
 		return vehiculo;
 	}
@@ -143,7 +137,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 			calcularCostoAdicionalCilindraje(vehiculo.getCilindraje());
 		}
 
-		return 0;
+		return costo;
 
 	}
 
@@ -158,13 +152,14 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	@Override
 	public List<Vehiculo> obtenerVehiculosDelParqueadero() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Vehiculo> listVehiculos= new ArrayList<>();
+		Vehiculo vehiculo= null;
+		listVehiculos.add(vehiculo);
+		return listVehiculos;
 	}
 
 	@Override
 	public RespuestaJson obtenerTRM() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

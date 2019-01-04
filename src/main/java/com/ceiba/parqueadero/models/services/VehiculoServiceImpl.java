@@ -1,6 +1,5 @@
 package com.ceiba.parqueadero.models.services;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.ceiba.parqueadero.models.dao.IRegistroDao;
 import com.ceiba.parqueadero.models.dao.IVehiculoDao;
-import com.ceiba.parqueadero.models.entity.Registro;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
-import com.ceiba.parqueadero.models.serviceInt.IVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
 import com.ceiba.parqueadero.reglas.ReglasParqueadero;
-import com.ceiba.parqueadero.util.RespuestaJson;
 
 @Service
 public class VehiculoServiceImpl implements IVehiculoService {
 	ReglasParqueadero reglasParqueadero= new ReglasParqueadero();
-	public final int estado=1;
 
 
 	@Autowired 

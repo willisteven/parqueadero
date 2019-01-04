@@ -10,7 +10,7 @@ import com.ceiba.parqueadero.models.dao.IRegistroDao;
 import com.ceiba.parqueadero.models.dao.IVehiculoDao;
 import com.ceiba.parqueadero.models.entity.Registro;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
-import com.ceiba.parqueadero.models.serviceInt.IRegistroService;
+import com.ceiba.parqueadero.models.serviceint.IRegistroService;
 
 @Service
 public class RegistroServiceImpl implements IRegistroService{

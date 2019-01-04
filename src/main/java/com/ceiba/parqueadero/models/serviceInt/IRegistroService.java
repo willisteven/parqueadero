@@ -1,9 +1,8 @@
-package com.ceiba.parqueadero.models.serviceInt;
+package com.ceiba.parqueadero.models.serviceint;
 
 import java.util.List;
 
 import com.ceiba.parqueadero.models.entity.Registro;
-import com.ceiba.parqueadero.util.RespuestaJson;
 
 public interface IRegistroService {
 

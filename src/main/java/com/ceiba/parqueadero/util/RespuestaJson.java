@@ -9,7 +9,7 @@ public class RespuestaJson {
 	public RespuestaJson(int codigoRespuesta, String descripcion) {
 		super();
 		this.codigoRespuesta = codigoRespuesta;
-		descripcion = descripcion;
+		this.descripcion = descripcion;
 	}
 	public int getCodigoRespuesta() {
 		return codigoRespuesta;
@@ -21,7 +21,7 @@ public class RespuestaJson {
 		return descripcion;
 	}
 	public void setDescripcion(String descripcion) {
-		descripcion = descripcion;
+		this.descripcion = descripcion;
 	}
 	
 	

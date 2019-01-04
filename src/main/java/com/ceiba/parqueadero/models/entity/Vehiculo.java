@@ -68,6 +68,4 @@ public class Vehiculo implements Serializable {
 		this.cilindraje = cilindraje;
 	}
 
-
-
 }

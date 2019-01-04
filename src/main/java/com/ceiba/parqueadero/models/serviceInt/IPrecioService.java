@@ -1,4 +1,4 @@
-package com.ceiba.parqueadero.models.serviceInt;
+package com.ceiba.parqueadero.models.serviceint;
 
 import com.ceiba.parqueadero.models.entity.Precio;
 

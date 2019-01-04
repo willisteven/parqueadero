@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.ceiba.parqueadero.models.dao.IPrecioDao;
 import com.ceiba.parqueadero.models.entity.Precio;
-import com.ceiba.parqueadero.models.serviceInt.IPrecioService;
+import com.ceiba.parqueadero.models.serviceint.IPrecioService;
 
 @Service
 public class PrecioServiceImpl implements IPrecioService{
@@ -15,8 +15,7 @@ public class PrecioServiceImpl implements IPrecioService{
 	
 	@Override
 	public Precio obtenerPrecioPorTipoVehiculoYTiempo(int idTipoVehiculo, int idTiempo) {
-		Precio precio = this.precioDao.obtenerPrecioPorTipoVehiculoYTiempo(idTipoVehiculo, idTiempo);
-		return null;
+		return precioDao.obtenerPrecioPorTipoVehiculoYTiempo(idTipoVehiculo, idTiempo);
 	}
 
 }

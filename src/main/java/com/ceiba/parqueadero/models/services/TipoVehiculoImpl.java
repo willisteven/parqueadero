@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.ceiba.parqueadero.models.dao.ITipoVehiculoDao;
 import com.ceiba.parqueadero.models.entity.TipoVehiculo;
-import com.ceiba.parqueadero.models.serviceInt.ITipoVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
 
 @Service
 public class TipoVehiculoImpl implements ITipoVehiculoService{
