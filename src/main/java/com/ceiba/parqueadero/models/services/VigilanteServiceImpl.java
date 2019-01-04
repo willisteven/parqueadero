@@ -17,13 +17,13 @@ import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
 import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
 import com.ceiba.parqueadero.models.serviceint.IVigilanteService;
 import com.ceiba.parqueadero.models.entity.Precio;
-import com.ceiba.parqueadero.reglas.ReglasParqueadero;
+import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 import com.ceiba.parqueadero.util.RespuestaJson;
 
 @Service
 public class VigilanteServiceImpl implements IVigilanteService {
 
-	ReglasParqueadero reglasParqueadero = new ReglasParqueadero();
+	ReglasParqueadero2 reglasParqueadero ;
 	public static final int ESTADO = 1;
 
 	@Autowired

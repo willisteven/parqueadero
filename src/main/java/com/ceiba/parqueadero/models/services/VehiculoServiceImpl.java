@@ -9,11 +9,11 @@ import com.ceiba.parqueadero.models.dao.IRegistroDao;
 import com.ceiba.parqueadero.models.dao.IVehiculoDao;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
 import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
-import com.ceiba.parqueadero.reglas.ReglasParqueadero;
+import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 
 @Service
 public class VehiculoServiceImpl implements IVehiculoService {
-	ReglasParqueadero reglasParqueadero= new ReglasParqueadero();
+	ReglasParqueadero2 reglasParqueadero;
 
 
 	@Autowired 

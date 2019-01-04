@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.ceiba.parqueadero.models.entity.Vehiculo;
 
-public class ReglasParqueadero {
+public class ReglasParqueadero2 {
 
 	/**
 	 * Metodo que valida el tipo de vehiculo que es permitido en el parqueadero
