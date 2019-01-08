@@ -3,24 +3,11 @@ package com.ceiba.parqueadero.reglas;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.ceiba.parqueadero.models.entity.Vehiculo;
+
 
 public class ReglasParqueadero2 {
 
-	/**
-	 * Metodo que valida el tipo de vehiculo que es permitido en el parqueadero
-	 * @param vehiculo
-	 * @return
-	 */
-	public boolean permiteTipoVehiculo(Vehiculo vehiculo) {
-		boolean permite = false;
-		if (vehiculo.getIdTipoVehiculo().getTipo().equals("carro") || vehiculo.getIdTipoVehiculo().getTipo().equals("moto"))
-			{permite = true;}
-		else {
-			permite = false;}
-		return permite;
-		
-	}
+
 	
 	public boolean disponibilidadVehiculo(int cantidad, String tipovehiculo) {
 		boolean flag = false;
@@ -52,9 +39,9 @@ public class ReglasParqueadero2 {
 			fechaPrestamo.setTime(new Date());
 			if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
 					|| fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-				isAutorizado = false;
-			} else {
 				isAutorizado = true;
+			} else {
+				isAutorizado = false;
 			}
 		}
 		return isAutorizado;

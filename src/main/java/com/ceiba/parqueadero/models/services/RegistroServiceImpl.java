@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ceiba.parqueadero.models.dao.IRegistroDao;
 import com.ceiba.parqueadero.models.dao.IVehiculoDao;
 import com.ceiba.parqueadero.models.entity.Registro;
-import com.ceiba.parqueadero.models.entity.Vehiculo;
+
 import com.ceiba.parqueadero.models.serviceint.IRegistroService;
 
 @Service
@@ -34,13 +34,12 @@ public class RegistroServiceImpl implements IRegistroService{
 
 	@Override
 	public Registro buscarVehiculoPorPlaca(String placa) {
-		Registro registro=this.registroDao.obtenerVehiculoActivo(placa);
-		
-		if(registro!=null) {
-			Vehiculo vehiculo= this.vehiculoDao.findByplaca(placa);
-			return new Registro(registro.getIngresoFecha(), registro.getSalidaFecha(), 0, vehiculo);
-		}
-		return null;
+		return this.registroDao.obtenerVehiculoActivo(placa);
+	}
+	
+	@Override
+	public List<Registro> buscarRegistrosVehiculosActivos(int estado) {
+		return registroDao.findByEstado(estado);
 	}
 
 

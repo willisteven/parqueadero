@@ -5,7 +5,7 @@ import java.util.List;
 import org.json.simple.JSONObject;
 
 
-import com.ceiba.parqueadero.models.entity.Vehiculo;
+
 import com.ceiba.parqueadero.util.RespuestaJson;
 
 public interface IVigilanteService {
@@ -14,8 +14,8 @@ public interface IVigilanteService {
 
 	public RespuestaJson realizarSalidaVehiculo(JSONObject vehiculo);
 
-	public List<Vehiculo> obtenerVehiculosDelParqueadero();
-	
-	public RespuestaJson obtenerTRM();
+	public List<JSONObject> getVehiculosParqueadero();
+		
+	public JSONObject getCilindrajeMoto(String placa);
 
 }

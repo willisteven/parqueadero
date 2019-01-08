@@ -37,11 +37,13 @@ public class Vehiculo implements Serializable {
 	@Column(name = "Activo")
 	private int activo;
 
-	public Vehiculo(String placa, TipoVehiculo idTipoVehiculo, int cilindraje) {
+	public Vehiculo() {}
+	public Vehiculo(String placa, TipoVehiculo idTipoVehiculo, int cilindraje,int activo) {
 		super();
 		this.placa = placa;
 		this.idTipoVehiculo = idTipoVehiculo;
 		this.cilindraje = cilindraje;
+		this.activo= activo;
 	}
 	
 	public TipoVehiculo getIdTipoVehiculo() {
@@ -66,5 +68,13 @@ public class Vehiculo implements Serializable {
 
 	public void setCilindraje(int cilindraje) {
 		this.cilindraje = cilindraje;
+	}
+
+	public int getActivo() {
+		return activo;
+	}
+
+	public void setActivo(int activo) {
+		this.activo = activo;
 	}
 }

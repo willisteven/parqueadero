@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ceiba.parqueadero.models.entity.Registro;
@@ -16,6 +17,7 @@ import com.ceiba.parqueadero.models.serviceint.IRegistroService;
 import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
 import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
 import com.ceiba.parqueadero.models.serviceint.IVigilanteService;
+import com.ceiba.parqueadero.constantes.Constantes;
 import com.ceiba.parqueadero.models.entity.Precio;
 import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 import com.ceiba.parqueadero.util.RespuestaJson;
@@ -23,8 +25,10 @@ import com.ceiba.parqueadero.util.RespuestaJson;
 @Service
 public class VigilanteServiceImpl implements IVigilanteService {
 
-	ReglasParqueadero2 reglasParqueadero ;
-	public static final int ESTADO = 1;
+	ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
+	
+	private static final String PLACA = "placa";
+
 
 	@Autowired
 	private IRegistroService registroService;
@@ -41,75 +45,128 @@ public class VigilanteServiceImpl implements IVigilanteService {
 	@Override
 	public RespuestaJson realizarRegistroVehiculo(JSONObject vehiculojs) {
 		try {
-			Vehiculo vehiculo;
-			vehiculo = this.createVehiculoFromJson(vehiculojs);
+			Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
+			if (vehiculo != null) {
 
-			List<Vehiculo> listVehiculos = vehiculoService
-					.buscarPorTipoVehiculoActivo(vehiculo.getIdTipoVehiculo().getTipo(), ESTADO);
-			if (this.reglasParqueadero.permiteTipoVehiculo(vehiculo)) {
-				if (this.reglasParqueadero.disponibilidadVehiculo(listVehiculos.size(),
-						vehiculo.getIdTipoVehiculo().getTipo())) {
-					if (this.reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca())) {
-						Date ingresoFecha = new Date();
-						Registro registro = new Registro(ingresoFecha, null, 0, vehiculo);
-						vehiculoService.guardarVehiculo(vehiculo);
-						registroService.guardarRegistro(registro);
+				boolean isVehiculoExiste = vehiculoService.vehiculoExiste(vehiculo.getPlaca(), Constantes.ACTIVO);
+
+				if (!isVehiculoExiste) {
+					List<Vehiculo> listVehiculos = vehiculoService
+							.buscarPorTipoVehiculoActivo(vehiculo.getIdTipoVehiculo().getTipo(), Constantes.ACTIVO);
+					if (this.reglasParqueadero.disponibilidadVehiculo(listVehiculos.size(),
+							vehiculo.getIdTipoVehiculo().getTipo())) {
+						if (this.reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca())) {
+							Date ingresoFecha = new Date();
+							Registro registro = new Registro(ingresoFecha, null, 0, vehiculo);
+							vehiculoService.guardarVehiculo(vehiculo);
+							registroService.guardarRegistro(registro);
+						} else {
+							return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_AUTORIZADO);
+						}
 					} else {
-						return new RespuestaJson(200, "No esta autorizado a ingresar");
+						return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_CUPO_DISPONIBLE);
 					}
+
 				} else {
-					return new RespuestaJson(200, "No hay cupo Disponible");
+					return new RespuestaJson(HttpStatus.OK.value(), Constantes.YA_ESTA_PARQUEADERO);
 				}
-
 			} else {
-				return new RespuestaJson(200, "Este vehiculo no esta permitido");
-
+				return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_PERMITIDO);
 			}
 		} catch (Exception e) {
-			return new RespuestaJson(500, "Se produjo un error en el servicio");
+			return new RespuestaJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), Constantes.ERROR_SERVICIO);
 		}
-		return new RespuestaJson(200, "Vehiculo Ingresado correctamente");
-	}
-
-	protected Vehiculo createVehiculoFromJson(JSONObject vehiculoJs) {
-		Vehiculo vehiculo = null;
-
-		String tipo = vehiculoJs.get("tipo").toString();
-		String placa = vehiculoJs.get("placa").toString();
-		int cilindraje = (int) vehiculoJs.get("cilindraje");
-
-		TipoVehiculo tipoVehiculo;
-		tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
-
-		vehiculo = new Vehiculo(placa, tipoVehiculo, cilindraje);
-
-		return vehiculo;
+		return new RespuestaJson(HttpStatus.OK.value(), Constantes.VEHICULO_INGRESADO);
 	}
 
 	@Override
 	public RespuestaJson realizarSalidaVehiculo(JSONObject vehiculojs) {
-		Date salidaFecha = new Date();
-		Vehiculo vehiculo;
-		vehiculo = this.createVehiculoFromJson(vehiculojs);
+		Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
+		return this.realizarSalida(vehiculo);
+	}
 
-		this.realizarSalida(salidaFecha, vehiculo);
-		return null;
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<JSONObject> getVehiculosParqueadero() {
+		List<JSONObject> listJsonObject = new ArrayList<>();
+		List<Registro> listRegistros = registroService.buscarRegistrosVehiculosActivos(Constantes.ACTIVO);
+
+		for (Registro registro : listRegistros) {
+			JSONObject json = new JSONObject();
+			json.put(PLACA, registro.getVehiculo().getPlaca());
+			json.put("tipo", registro.getVehiculo().getIdTipoVehiculo().getTipo());
+			json.put("ingresoFecha", registro.getIngresoFecha());
+
+			listJsonObject.add(json);
+		}
+		return listJsonObject;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject getCilindrajeMoto(String placa) {
+		JSONObject json = new JSONObject();
+		Vehiculo vehiculo = this.vehiculoService.buscarCilindraje(placa,Constantes.ACTIVO);
+		if (vehiculo != null) {
+			json.put(PLACA, vehiculo.getPlaca());
+			json.put("cilindraje", vehiculo.getCilindraje());
+			json.put("tipo", vehiculo.getIdTipoVehiculo().getTipo());
+			
+		} else {
+			json.put("Mensaje",Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
+
+		}
+		return json;
 
 	}
 
-	public RespuestaJson realizarSalida(Date salidaFecha, Vehiculo vehiculo) {
+
+
+	protected Vehiculo getVehiculoJson(JSONObject vehiculoJs) {
+		Vehiculo vehiculo = null;
+
+		String tipo = vehiculoJs.get("tipo").toString();
+		String placa = vehiculoJs.get(PLACA).toString();
+		String cilindrajeJson=vehiculoJs.get("cilindraje").toString();
+		int cilindraje = 0;
+		if (cilindrajeJson != ("")) {
+			cilindraje = Integer.parseInt(cilindrajeJson);
+		}
+		TipoVehiculo tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
+		if (tipoVehiculo != null) {
+			vehiculo = new Vehiculo(placa, tipoVehiculo, cilindraje, Constantes.ACTIVO);
+		} else {
+			return null;
+		}
+		return vehiculo;
+	}
+
+	public RespuestaJson realizarSalida(Vehiculo vehiculo) {
+		Date salidaFecha = new Date();
 		Registro registro = this.registroService.buscarVehiculoPorPlaca(vehiculo.getPlaca());
 		if (registro != null) {
 
-			this.calcularCobroParqueadero(vehiculo, registro.getIngresoFecha(), salidaFecha);
+			int costo = this.calcularCobroParqueadero(vehiculo, registro.getIngresoFecha(), salidaFecha);
+			registro.setSalidaFecha(salidaFecha);
+			registro.setValorPagar(costo);
+			registro.getVehiculo().setActivo(Constantes.INACTIVO);
+
+			this.registroService.guardarRegistro(registro);
+			return new RespuestaJson(HttpStatus.OK.value(),
+					"El valor a pagar por la estadia en el parqueadero para el vehiculo con placa "
+							+ vehiculo.getPlaca() + " es : $" + costo + " fecha de ingreso : "
+							+ registro.getIngresoFecha());
+
 		} else {
 
-			return new RespuestaJson(200, "El vehiculo no se encuentra activo, o no ha ingresado al parqueadero.");
+			return new RespuestaJson(HttpStatus.OK.value(),
+					Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
 		}
-		return null;
+
 	}
 
-	public double calcularCobroParqueadero(Vehiculo vehiculo, Date ingresoFecha, Date salidaFecha) {
+	public int calcularCobroParqueadero(Vehiculo vehiculo, Date ingresoFecha, Date salidaFecha) {
 		long ingresoFechaTime = ingresoFecha.getTime();
 		long salidaFechaTime = salidaFecha.getTime();
 
@@ -119,8 +176,8 @@ public class VigilanteServiceImpl implements IVigilanteService {
 				.obtenerPrecioPorTipoVehiculoYTiempo(vehiculo.getIdTipoVehiculo().getIdTipoVehiculo(), 2);
 
 		int cantidadHoras = 1;
-		cantidadHoras += calcularTiempoEnElParqueadero(ingresoFechaTime, salidaFechaTime, 3600000);
-		int cantidadDias = calcularTiempoEnElParqueadero(ingresoFechaTime, salidaFechaTime, 86400000);
+		cantidadHoras += calcularTiempoEnElParqueadero(ingresoFechaTime, salidaFechaTime, Constantes.HORA);
+		int cantidadDias = calcularTiempoEnElParqueadero(ingresoFechaTime, salidaFechaTime, Constantes.DIA);
 
 		cantidadHoras -= (cantidadDias * 24);
 
@@ -133,8 +190,8 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		int valorPorDias = (int) (cantidadDias * precioDia.getValor());
 		int costo = valorPorHoras + valorPorDias;
 
-		if (vehiculo.getIdTipoVehiculo().getTipo() == "moto") {
-			calcularCostoAdicionalCilindraje(vehiculo.getCilindraje());
+		if (vehiculo.getIdTipoVehiculo().getTipo().equals("moto")) {
+			costo += calcularCostoAdicionalCilindraje(vehiculo.getCilindraje());
 		}
 
 		return costo;
@@ -147,20 +204,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 	}
 
 	public int calcularCostoAdicionalCilindraje(int cilindraje) {
-		return (cilindraje > 500) ? 2000 : 0;
-	}
-
-	@Override
-	public List<Vehiculo> obtenerVehiculosDelParqueadero() {
-		List<Vehiculo> listVehiculos= new ArrayList<>();
-		Vehiculo vehiculo= null;
-		listVehiculos.add(vehiculo);
-		return listVehiculos;
-	}
-
-	@Override
-	public RespuestaJson obtenerTRM() {
-		return null;
+		return (cilindraje > Constantes.CILINDRAJE_TOPE) ? Constantes.VALOR_CILINDRAJE_EXTRA : 0;
 	}
 
 }

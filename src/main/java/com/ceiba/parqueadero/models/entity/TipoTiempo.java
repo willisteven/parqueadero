@@ -19,6 +19,7 @@ public class TipoTiempo  implements Serializable{
 	@Column(name ="tipo" , nullable= false )
 	private String tipo;
 	
+	public TipoTiempo() {}
 	public TipoTiempo(int idTipoTiempo, String tipo) {
 		super();
 		this.idTipoTiempo = idTipoTiempo;

@@ -36,7 +36,7 @@ public class Precio  implements Serializable {
 	@Column(name ="valor" , nullable= false )
 	private double valor;
 
-	
+	public Precio() {}
 	
 	public Precio(int idPrecio, TipoVehiculo idTipoVehiculo, TipoTiempo idTipoTiempo, double valor) {
 		super();

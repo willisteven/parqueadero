@@ -42,6 +42,7 @@ public class Registro  implements Serializable{
 	@JoinColumn(name = "ID_VEHICULO")
 	private Vehiculo vehiculo;
 	
+	public Registro() {}
 	public Registro( Date ingresoFecha, Date salidaFecha, double valorPagar,
 			Vehiculo vehiculo) {
 		super();
