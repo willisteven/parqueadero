@@ -72,6 +72,16 @@ public class VigilanteTest {
 		
 	}
 	
+	@Test
+	public void placaComienzaLetraDiferenteA() {
+		//arrange
+		
+		//act
+		
+		//assert	
+		
+	}
+	
 	
 	
 	

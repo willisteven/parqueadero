@@ -7,8 +7,6 @@ import java.util.Date;
 
 public class ReglasParqueadero2 {
 
-
-	
 	public boolean disponibilidadVehiculo(int cantidad, String tipovehiculo) {
 		boolean flag = false;
 
