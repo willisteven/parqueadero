@@ -40,7 +40,9 @@ dependencies {
 	testImplementation 'junit:junit:4.12'
 	testCompile 'org.mockito:mockito-all:1.10.19'
 	compile fileTree(dir: 'libs', include: '*.jar')
-	testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
+	//testCompile group: 'com.h2database', name: 'h2', version: '1.4.197'
+	testCompile 'mysql:mysql-connector-java'
+	
 }
 
 task listJars << {
