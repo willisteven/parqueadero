@@ -38,14 +38,21 @@ public class Vehiculo implements Serializable {
 	private int activo;
 
 	public Vehiculo() {}
-	public Vehiculo(String placa, TipoVehiculo idTipoVehiculo, int cilindraje,int activo) {
+	public Vehiculo(int idVehiculo,String placa, TipoVehiculo idTipoVehiculo, int cilindraje,int activo) {
 		super();
+		this.idVehiculo=idVehiculo;
 		this.placa = placa;
 		this.idTipoVehiculo = idTipoVehiculo;
 		this.cilindraje = cilindraje;
 		this.activo= activo;
 	}
 	
+	public int getIdVehiculo() {
+		return idVehiculo;
+	}
+	public void setIdVehiculo(int idVehiculo) {
+		this.idVehiculo = idVehiculo;
+	}
 	public TipoVehiculo getIdTipoVehiculo() {
 		return idTipoVehiculo;
 	}

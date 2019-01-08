@@ -26,9 +26,8 @@ import com.ceiba.parqueadero.util.RespuestaJson;
 public class VigilanteServiceImpl implements IVigilanteService {
 
 	ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
-	
-	private static final String PLACA = "placa";
 
+	private static final String PLACA = "placa";
 
 	@Autowired
 	private IRegistroService registroService;
@@ -42,41 +41,62 @@ public class VigilanteServiceImpl implements IVigilanteService {
 	@Autowired
 	private ITipoVehiculoService tipoVehiculoService;
 
+	public RespuestaJson validacionReglasParqueadero(Vehiculo vehiculo) {
+		boolean yaEstaParqueadero = false;
+		boolean cupoDisponible = false;
+		boolean autorizado = false;
+		boolean isVehiculoExiste = false;
+
+		if (vehiculo != null) {
+			isVehiculoExiste = vehiculoService.vehiculoExiste(vehiculo.getPlaca(), Constantes.ACTIVO);
+		} else {
+			return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_PERMITIDO);
+		}
+
+		if (!isVehiculoExiste) {
+			yaEstaParqueadero = true;
+			List<Vehiculo> listVehiculos = vehiculoService
+					.buscarPorTipoVehiculoActivo(vehiculo.getIdTipoVehiculo().getTipo(), Constantes.ACTIVO);
+			if (this.reglasParqueadero.disponibilidadVehiculo(listVehiculos.size(),
+					vehiculo.getIdTipoVehiculo().getTipo())) {
+				cupoDisponible = true;
+			}
+			if (this.reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca())) {
+				autorizado = true;
+			}
+		}
+
+		if (!yaEstaParqueadero) {
+			return new RespuestaJson(HttpStatus.OK.value(), Constantes.YA_ESTA_PARQUEADERO);
+		}
+
+		if (!cupoDisponible) {
+			return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_CUPO_DISPONIBLE);
+		}
+
+		if (!autorizado) {
+			return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_AUTORIZADO);
+		}
+
+		this.guardarVehiculoRegistro(vehiculo);
+
+		return new RespuestaJson(HttpStatus.OK.value(), Constantes.VEHICULO_INGRESADO);
+
+	}
+
+	public void guardarVehiculoRegistro(Vehiculo vehiculo) {
+		Date ingresoFecha = new Date();
+		Registro registro = new Registro(ingresoFecha, null, 0, vehiculo);
+		vehiculoService.guardarVehiculo(vehiculo);
+		registroService.guardarRegistro(registro);
+
+	}
+
 	@Override
 	public RespuestaJson realizarRegistroVehiculo(JSONObject vehiculojs) {
-		try {
-			Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
-			if (vehiculo != null) {
+		Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
+		return this.validacionReglasParqueadero(vehiculo);
 
-				boolean isVehiculoExiste = vehiculoService.vehiculoExiste(vehiculo.getPlaca(), Constantes.ACTIVO);
-
-				if (!isVehiculoExiste) {
-					List<Vehiculo> listVehiculos = vehiculoService
-							.buscarPorTipoVehiculoActivo(vehiculo.getIdTipoVehiculo().getTipo(), Constantes.ACTIVO);
-					if (this.reglasParqueadero.disponibilidadVehiculo(listVehiculos.size(),
-							vehiculo.getIdTipoVehiculo().getTipo())) {
-						if (this.reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca())) {
-							Date ingresoFecha = new Date();
-							Registro registro = new Registro(ingresoFecha, null, 0, vehiculo);
-							vehiculoService.guardarVehiculo(vehiculo);
-							registroService.guardarRegistro(registro);
-						} else {
-							return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_AUTORIZADO);
-						}
-					} else {
-						return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_CUPO_DISPONIBLE);
-					}
-
-				} else {
-					return new RespuestaJson(HttpStatus.OK.value(), Constantes.YA_ESTA_PARQUEADERO);
-				}
-			} else {
-				return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_PERMITIDO);
-			}
-		} catch (Exception e) {
-			return new RespuestaJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), Constantes.ERROR_SERVICIO);
-		}
-		return new RespuestaJson(HttpStatus.OK.value(), Constantes.VEHICULO_INGRESADO);
 	}
 
 	@Override
@@ -102,40 +122,37 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		return listJsonObject;
 	}
 
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getCilindrajeMoto(String placa) {
 		JSONObject json = new JSONObject();
-		Vehiculo vehiculo = this.vehiculoService.buscarCilindraje(placa,Constantes.ACTIVO);
+		Vehiculo vehiculo = this.vehiculoService.buscarCilindraje(placa, Constantes.ACTIVO);
 		if (vehiculo != null) {
 			json.put(PLACA, vehiculo.getPlaca());
 			json.put("cilindraje", vehiculo.getCilindraje());
 			json.put("tipo", vehiculo.getIdTipoVehiculo().getTipo());
-			
+
 		} else {
-			json.put("Mensaje",Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
+			json.put("Mensaje", Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
 
 		}
 		return json;
 
 	}
 
-
-
 	protected Vehiculo getVehiculoJson(JSONObject vehiculoJs) {
 		Vehiculo vehiculo = null;
 
 		String tipo = vehiculoJs.get("tipo").toString();
 		String placa = vehiculoJs.get(PLACA).toString();
-		String cilindrajeJson=vehiculoJs.get("cilindraje").toString();
+		String cilindrajeJson = vehiculoJs.get("cilindraje").toString();
 		int cilindraje = 0;
 		if (cilindrajeJson != ("")) {
 			cilindraje = Integer.parseInt(cilindrajeJson);
 		}
 		TipoVehiculo tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
 		if (tipoVehiculo != null) {
-			vehiculo = new Vehiculo(placa, tipoVehiculo, cilindraje, Constantes.ACTIVO);
+			vehiculo = new Vehiculo(0, placa, tipoVehiculo, cilindraje, Constantes.ACTIVO);
 		} else {
 			return null;
 		}
@@ -160,8 +177,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 		} else {
 
-			return new RespuestaJson(HttpStatus.OK.value(),
-					Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
+			return new RespuestaJson(HttpStatus.OK.value(), Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
 		}
 
 	}
