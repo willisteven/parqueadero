@@ -14,6 +14,7 @@ import org.mockito.Mock;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@TestPropertySource(locations = "classpath:test.properties")
 public class VigilanteTest {
 
 	@Mock
