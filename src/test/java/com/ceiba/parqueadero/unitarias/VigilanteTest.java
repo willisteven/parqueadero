@@ -24,6 +24,7 @@ public class VigilanteTest {
 
 	@Test
 	public void tipoVehiculoCarro() {
+		System.out.println("prueba: ");
 		// arrange
 
 		// act
