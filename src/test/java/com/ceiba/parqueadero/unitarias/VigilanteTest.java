@@ -18,7 +18,7 @@ import org.mockito.Mock;
 @SpringBootTest
 //@TestPropertySource(locations = "classpath:test.properties")
 public class VigilanteTest {
-
+//prueba cmmit
 	//@Mock
 	//private ITipoVehiculoService tipoVehiculoService;
 
