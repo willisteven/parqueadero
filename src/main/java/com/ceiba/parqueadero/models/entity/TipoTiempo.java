@@ -12,6 +12,11 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "tipo_tiempo")
 public class TipoTiempo  implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idTipoTiempo;

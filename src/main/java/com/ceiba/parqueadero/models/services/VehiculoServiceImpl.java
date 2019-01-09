@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ceiba.parqueadero.models.dao.IRegistroDao;
 import com.ceiba.parqueadero.models.dao.IVehiculoDao;
 
 import com.ceiba.parqueadero.models.entity.Vehiculo;
@@ -20,8 +19,6 @@ public class VehiculoServiceImpl implements IVehiculoService {
 	@Autowired
 	private IVehiculoDao vehiculoDao;
 
-	@Autowired
-	private IRegistroDao registroDao;
 
 	@Override
 	public List<Vehiculo> findAll() {

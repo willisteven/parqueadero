@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ceiba.parqueadero.models.dao.IRegistroDao;
-import com.ceiba.parqueadero.models.dao.IVehiculoDao;
 import com.ceiba.parqueadero.models.entity.Registro;
 
 import com.ceiba.parqueadero.models.serviceint.IRegistroService;
@@ -18,8 +17,6 @@ public class RegistroServiceImpl implements IRegistroService{
 	@Autowired
 	private IRegistroDao registroDao;
 	
-	@Autowired
-	private IVehiculoDao vehiculoDao;
 	
 	@Override
 	@Transactional(readOnly=true)
