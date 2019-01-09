@@ -48,6 +48,8 @@ public class VigilanteTest {
 
 	@Test
 	public void validarCarrosParqueaderoDisponible() {
+		System.out.println("prueba: ");
+
 		// arrange
 		/*ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
 		boolean disponible;
