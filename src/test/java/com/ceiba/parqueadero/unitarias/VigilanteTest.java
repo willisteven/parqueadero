@@ -19,8 +19,8 @@ import org.mockito.Mock;
 //@TestPropertySource(locations = "classpath:test.properties")
 public class VigilanteTest {
 //prueba cmmit
-	//@Mock
-	//private ITipoVehiculoService tipoVehiculoService;
+	@Mock
+	private ITipoVehiculoService tipoVehiculoService;
 
 	@Test
 	public void tipoVehiculoCarro() {
@@ -51,7 +51,7 @@ public class VigilanteTest {
 		System.out.println("prueba: ");
 
 		// arrange
-		/*ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
+		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
 		boolean disponible;
 		int cantidad = 19;
 		String tipo = "carro";
@@ -59,7 +59,7 @@ public class VigilanteTest {
 		disponible = reglasParqueadero.disponibilidadVehiculo(cantidad, tipo);
 
 		// assert
-		Assert.assertTrue(disponible);*/
+		Assert.assertTrue(disponible);
 
 	}
 
@@ -68,7 +68,7 @@ public class VigilanteTest {
 		System.out.println("prueba: ");
 
 		// arrange
-	/*	ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
+		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
 		boolean disponible;
 		int cantidad = 9;
 		String tipo = "moto";
@@ -76,7 +76,7 @@ public class VigilanteTest {
 		disponible = reglasParqueadero.disponibilidadVehiculo(cantidad, tipo);
 
 		// assert
-		Assert.assertTrue(disponible);*/
+		Assert.assertTrue(disponible);
 
 	}
 
@@ -85,7 +85,7 @@ public class VigilanteTest {
 		System.out.println("prueba: ");
 
 		// arrange
-	/*	ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
+		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
 		boolean autorizado;
 		String placa="AXZ";
 		// act
@@ -93,7 +93,7 @@ public class VigilanteTest {
 
 		// assert
 		Assert.assertFalse(autorizado);
-*/
+
 	}
 
 	@Test
