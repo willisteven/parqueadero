@@ -3,7 +3,8 @@ package com.ceiba.parqueadero.constantes;
 public class Constantes {
 
 	private Constantes() {
-	}
+	    throw new IllegalStateException("Utility class");
+	  }
 
 	public static final int ACTIVO = 1;
 	public static final int INACTIVO = 0;

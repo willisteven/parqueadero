@@ -3,27 +3,24 @@ package com.ceiba.parqueadero.reglas;
 import java.util.Calendar;
 import java.util.Date;
 
-
-
 public class ReglasParqueadero2 {
 
 	public boolean disponibilidadVehiculo(int cantidad, String tipovehiculo) {
 		boolean flag = false;
 
-		if (cantidad < 20 && tipovehiculo.equals("carro")) {
+		if (cantidad < 20 && ("carro").equals(tipovehiculo)) {
 			flag = true;
-		} else if (cantidad < 10 && tipovehiculo.equals("moto")) {
+		} else if (cantidad < 10 && ("moto").equals(tipovehiculo)) {
 			flag = true;
 		} else {
 			flag = false;
 		}
 		return flag;
 	}
-	
-	
+
 	/**
-	 * Metodo que valida los dias permitidos para las
-	 * placas que comienzan por la letra A.
+	 * Metodo que valida los dias permitidos para las placas que comienzan por la
+	 * letra A.
 	 * 
 	 * @param placa
 	 * @return
@@ -32,7 +29,7 @@ public class ReglasParqueadero2 {
 
 		boolean isAutorizado = true;
 		String letraUp = placa.toUpperCase().substring(0, 1);
-		if (letraUp.equals("A")) {
+		if (("A").equals(letraUp)) {
 			Calendar fechaPrestamo = Calendar.getInstance();
 			fechaPrestamo.setTime(new Date());
 			if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY

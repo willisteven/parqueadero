@@ -96,7 +96,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		String placa = vehiculoJs.get(PLACA).toString();
 		String cilindrajeJson = vehiculoJs.get("cilindraje").toString();
 		int cilindraje = 0;
-		if (cilindrajeJson != ("")) {
+		if (cilindrajeJson.equals("")) {
 			cilindraje = Integer.parseInt(cilindrajeJson);
 		}
 		TipoVehiculo tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
@@ -154,7 +154,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		int valorPorDias = (int) (cantidadDias * precioDia.getValor());
 		int costo = valorPorHoras + valorPorDias;
 
-		if (vehiculo.getIdTipoVehiculo().getTipo().equals("moto")) {
+		if ("moto".equals(vehiculo.getIdTipoVehiculo().getTipo())) {
 			costo += calcularCostoAdicionalCilindraje(vehiculo.getCilindraje());
 		}
 

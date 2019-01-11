@@ -64,6 +64,23 @@ public class VigilanteTest {
 	}
 
 	@Test
+	public void validarVehiculosParqueaderoNoDisponible() {
+		System.out.println("prueba: ");
+
+		// arrange
+		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
+		boolean disponible;
+		int cantidad = 20;
+		String tipo = "carro";
+		// act
+		disponible = reglasParqueadero.disponibilidadVehiculo(cantidad, tipo);
+
+		// assert
+		Assert.assertFalse(disponible);
+
+	}
+	
+	@Test
 	public void validarMotosParqueaderoDisponible() {
 		System.out.println("prueba: ");
 
