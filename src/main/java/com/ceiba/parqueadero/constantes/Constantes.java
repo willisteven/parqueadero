@@ -9,7 +9,7 @@ public class Constantes {
 	public static final int ACTIVO = 1;
 	public static final int INACTIVO = 0;
 
-	public static final String NO_AUTORIZADO = "No esta autorizado a ingresar";
+	public static final String NO_AUTORIZADO = "No puede ingresar porque no está en un dia hábil";
 	public static final String NO_CUPO_DISPONIBLE = "No hay cupo Disponible";
 	public static final String YA_ESTA_PARQUEADERO = "Este vehiculo ya esta en el parqueadero";
 	public static final String NO_PERMITIDO = "Este vehiculo no esta permitido";
