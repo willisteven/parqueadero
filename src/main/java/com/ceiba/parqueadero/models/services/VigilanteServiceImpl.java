@@ -120,9 +120,8 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 			this.registroService.guardarRegistro(registro);
 			return new RespuestaJson(HttpStatus.OK.value(),
-					"El valor a pagar por la estadia en el parqueadero para el vehiculo con placa "
-							+ vehiculo.getPlaca() + " es : $" + costo + " fecha de ingreso : "
-							+ registro.getIngresoFecha());
+					"El vehiculo con placa " + vehiculo.getPlaca() + " ingreso en la fecha: "
+							+ registro.getIngresoFecha() + "y el valor del alquiler del parqueadero es: " + costo);
 
 		} else {
 
