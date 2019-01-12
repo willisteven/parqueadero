@@ -98,13 +98,20 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		int cilindraje = 0;
 		cilindraje = Integer.parseInt(cilindrajeJson);
 
-		TipoVehiculo tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
+		TipoVehiculo tipoVehiculo = this.validarTipoVehiculo(tipo);
 		if (tipoVehiculo != null) {
 			vehiculo = new Vehiculo(0, placa, tipoVehiculo, cilindraje, Constantes.ACTIVO);
+		}
+		return vehiculo;
+	}
+
+	public TipoVehiculo validarTipoVehiculo(String tipo) {
+		TipoVehiculo tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
+		if (tipoVehiculo != null) {
+			return tipoVehiculo;
 		} else {
 			return null;
 		}
-		return vehiculo;
 	}
 
 	public RespuestaJson realizarSalida(Vehiculo vehiculo) {
@@ -118,13 +125,13 @@ public class VigilanteServiceImpl implements IVigilanteService {
 			registro.getVehiculo().setActivo(Constantes.INACTIVO);
 
 			this.registroService.guardarRegistro(registro);
-			return new RespuestaJson(HttpStatus.OK.value(),
+			return new RespuestaJson(HttpStatus.OK.value(), true,
 					"El vehiculo con placa " + vehiculo.getPlaca() + " ingreso en la fecha: "
 							+ registro.getIngresoFecha() + "y el valor del alquiler del parqueadero es: " + costo);
 
 		} else {
 
-			return new RespuestaJson(HttpStatus.OK.value(), Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
+			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
 		}
 
 	}
@@ -179,7 +186,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		if (vehiculo != null) {
 			isVehiculoExiste = vehiculoService.vehiculoExiste(vehiculo.getPlaca(), Constantes.ACTIVO);
 		} else {
-			return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_PERMITIDO);
+			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_PERMITIDO);
 		}
 
 		if (!isVehiculoExiste) {
@@ -196,26 +203,26 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		}
 
 		if (!yaEstaParqueadero) {
-			return new RespuestaJson(HttpStatus.OK.value(), Constantes.YA_ESTA_PARQUEADERO);
+			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.YA_ESTA_PARQUEADERO);
 		}
 
 		if (!cupoDisponible) {
-			return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_CUPO_DISPONIBLE);
+			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_CUPO_DISPONIBLE);
 		}
 
 		if (!autorizado) {
-			return new RespuestaJson(HttpStatus.OK.value(), Constantes.NO_AUTORIZADO);
+			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_AUTORIZADO);
 		}
 
 		this.guardarVehiculoRegistro(vehiculo);
 
-		return new RespuestaJson(HttpStatus.OK.value(), Constantes.VEHICULO_INGRESADO);
+		return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.VEHICULO_INGRESADO);
 
 	}
 
 	public void guardarVehiculoRegistro(Vehiculo vehiculo) {
 		Date ingresoFecha = new Date();
-		Registro registro = new Registro(ingresoFecha, null, 0, vehiculo);
+		Registro registro = new Registro(0, ingresoFecha, null, 0, vehiculo);
 		vehiculoService.guardarVehiculo(vehiculo);
 		registroService.guardarRegistro(registro);
 

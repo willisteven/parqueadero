@@ -16,7 +16,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "registro")
-public class Registro  implements Serializable{
+public class Registro implements Serializable {
 
 	/**
 	 * 
@@ -27,31 +27,33 @@ public class Registro  implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int idRegistro;
 
-	@Column(name ="ingresoFecha" , nullable= false )
+	@Column(name = "ingresoFecha", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date ingresoFecha;
-	
-	@Column(name ="salidaFecha" , nullable= true )
+
+	@Column(name = "salidaFecha", nullable = true)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date salidaFecha;
-	
-	@Column(name ="valorPagar" , nullable= true )
+
+	@Column(name = "valorPagar", nullable = true)
 	private double valorPagar;
-	
+
 	@ManyToOne()
 	@JoinColumn(name = "ID_VEHICULO")
 	private Vehiculo vehiculo;
-	
-	public Registro() {}
-	public Registro( Date ingresoFecha, Date salidaFecha, double valorPagar,
-			Vehiculo vehiculo) {
+
+	public Registro() {
+	}
+
+	public Registro(int idRegistro, Date ingresoFecha, Date salidaFecha, double valorPagar, Vehiculo vehiculo) {
 		super();
+		this.idRegistro = idRegistro;
 		this.ingresoFecha = ingresoFecha;
 		this.salidaFecha = salidaFecha;
 		this.valorPagar = valorPagar;
 		this.vehiculo = vehiculo;
 	}
-	
+
 	public int getId() {
 		return idRegistro;
 	}
@@ -84,7 +86,6 @@ public class Registro  implements Serializable{
 		this.valorPagar = valorPagar;
 	}
 
-
 	public Vehiculo getVehiculo() {
 		return vehiculo;
 	}
@@ -92,5 +93,5 @@ public class Registro  implements Serializable{
 	public void setVehiculo(Vehiculo vehiculo) {
 		this.vehiculo = vehiculo;
 	}
-	
+
 }
