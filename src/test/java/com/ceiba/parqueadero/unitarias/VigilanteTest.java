@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +22,7 @@ import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
 import com.ceiba.parqueadero.models.services.VigilanteServiceImpl;
 import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 import com.ceiba.parqueadero.testdatabuilder.VehiculoTestDataBuilder;
+
 import com.ceiba.parqueadero.models.entity.Vehiculo;
 
 import org.mockito.InjectMocks;
@@ -162,7 +164,7 @@ public class VigilanteTest {
 	}
 
 	@Test
-	public void obtenerValorAPagarMotoConCostoPorCilindraje() {
+	public void calcularCobroMotoPorCilindraje() {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 		vehiculoTest.withIdVehiculo(1);
@@ -183,12 +185,32 @@ public class VigilanteTest {
 				1)).thenReturn(precioPorHora);
 		when(this.precioService.obtenerPrecioPorTipoVehiculoYTiempo(vehiculo.getIdTipoVehiculo().getIdTipoVehiculo(),
 				2)).thenReturn(precioPorDia);
-		
+
 		// act
 		int cantidadAPagar = this.vigilante.calcularCobroParqueadero(vehiculo, fechaIngreso, fechaSalida);
-		
+
 		// assert
 		Assert.assertEquals(7500, cantidadAPagar);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void convertirJSONaVehiculo() {
+		// arrange
+		JSONObject jsonVehiculo = new JSONObject();
+		jsonVehiculo.put("tipo", "carro");
+		jsonVehiculo.put("placa", "ZAS567");
+		jsonVehiculo.put("cilindraje", 0);
+
+		TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
+		when(this.tipoVehiculoService.consultarTipoVehiculo("carro")).thenReturn(tipoVehiculo);
+
+		// act
+		Vehiculo vehiculo = this.vigilante.getVehiculoJson(jsonVehiculo);
+
+		// assert
+		Assert.assertEquals("ZAS567", vehiculo.getPlaca());
+
 	}
 
 }

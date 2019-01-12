@@ -89,16 +89,15 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	}
 
-	protected Vehiculo getVehiculoJson(JSONObject vehiculoJs) {
+	public Vehiculo getVehiculoJson(JSONObject vehiculoJs) {
 		Vehiculo vehiculo = null;
 
 		String tipo = vehiculoJs.get("tipo").toString();
 		String placa = vehiculoJs.get(PLACA).toString();
 		String cilindrajeJson = vehiculoJs.get("cilindraje").toString();
 		int cilindraje = 0;
-		if (cilindrajeJson.equals("")) {
-			cilindraje = Integer.parseInt(cilindrajeJson);
-		}
+		cilindraje = Integer.parseInt(cilindrajeJson);
+
 		TipoVehiculo tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
 		if (tipoVehiculo != null) {
 			vehiculo = new Vehiculo(0, placa, tipoVehiculo, cilindraje, Constantes.ACTIVO);
