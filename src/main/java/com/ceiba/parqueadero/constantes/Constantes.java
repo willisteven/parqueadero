@@ -3,8 +3,8 @@ package com.ceiba.parqueadero.constantes;
 public class Constantes {
 
 	private Constantes() {
-	    throw new IllegalStateException("Utility class");
-	  }
+		throw new IllegalStateException("Utility class");
+	}
 
 	public static final int ACTIVO = 1;
 	public static final int INACTIVO = 0;
@@ -16,14 +16,26 @@ public class Constantes {
 	public static final String ERROR_SERVICIO = "Se produjo un error en el servicio";
 	public static final String VEHICULO_INGRESADO = "El Vehiculo fue Ingresado al parqueadero correctamente";
 	public static final String VEHICULO_NO_ESTA_PARQUEADERO = "El vehiculo no se encuentra en el parqueadero actualmente";
-		
+
 	public static final int HORA = 3600000;
 	public static final int DIA = 86400000;
-	
+
 	public static final int CILINDRAJE_TOPE = 500;
 	public static final int VALOR_CILINDRAJE_EXTRA = 2000;
 
-	
-	
+	/**
+	 * Valid from and valid to TCRM date format
+	 */
+	public static final String DATE_RESPONSE_FORMAT = "EEE, d MMM yyyy HH:mm:ss Z";
+
+	/**
+	 * TCRM query value format
+	 */
+	public static final String VALUE_QUERY_FORMAT = "#0.00";
+
+	/**
+	 * Web Service end point
+	 */
+	public static final String WEB_SERVICE_URL = "https://www.superfinanciera.gov.co/SuperfinancieraWebServiceTRM/TCRMServicesWebService/TCRMServicesWebService?WSDL";
 
 }

@@ -1,6 +1,12 @@
 package com.ceiba.parqueadero.models.services;
 
+import java.rmi.RemoteException;
+
+
+import java.text.ParseException;
+
 import java.util.ArrayList;
+
 import java.util.Date;
 import java.util.List;
 
@@ -15,12 +21,16 @@ import com.ceiba.parqueadero.models.entity.Vehiculo;
 import com.ceiba.parqueadero.models.serviceint.IPrecioService;
 import com.ceiba.parqueadero.models.serviceint.IRegistroService;
 import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.ITrmSuperFinancieraService;
 import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
 import com.ceiba.parqueadero.models.serviceint.IVigilanteService;
 import com.ceiba.parqueadero.constantes.Constantes;
 import com.ceiba.parqueadero.models.entity.Precio;
 import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 import com.ceiba.parqueadero.util.RespuestaJson;
+
+
+
 
 @Service
 public class VigilanteServiceImpl implements IVigilanteService {
@@ -40,6 +50,9 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	@Autowired
 	private ITipoVehiculoService tipoVehiculoService;
+	
+	@Autowired
+	private ITrmSuperFinancieraService trmService;
 
 	@Override
 	public RespuestaJson realizarRegistroVehiculo(JSONObject vehiculojs) {
@@ -227,4 +240,9 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		registroService.guardarRegistro(registro);
 
 	}
+	
+	public RespuestaJson obtenerTrm() throws RemoteException, ParseException {
+		return this.trmService.obtenerTrm(); 
+	}
+	
 }

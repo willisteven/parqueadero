@@ -1,5 +1,7 @@
 package com.ceiba.parqueadero.models.serviceint;
 
+import java.rmi.RemoteException;
+import java.text.ParseException;
 import java.util.List;
 
 import org.json.simple.JSONObject;
@@ -18,4 +20,5 @@ public interface IVigilanteService {
 		
 	public JSONObject getCilindrajeMoto(String placa);
 
+	public RespuestaJson obtenerTrm() throws ParseException, RemoteException;
 }

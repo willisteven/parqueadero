@@ -36,6 +36,7 @@ dependencies {
 	testCompile 'org.mockito:mockito-all:1.10.19'
 	compile fileTree(dir: 'libs', include: '*.jar')
 	runtimeOnly 'com.h2database:h2'
+	compile files('lib/trm_superfinanciera.jar')
 	
 
 }

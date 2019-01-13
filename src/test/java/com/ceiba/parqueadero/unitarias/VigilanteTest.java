@@ -165,26 +165,7 @@ public class VigilanteTest {
 		Assert.assertTrue(disponible);
 
 	}
-
-	@Test
-	public void placaComienzaLetraA() {
-		System.out.println("prueba: ");
-
-		// arrange
-		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
-		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
-		vehiculoTest.withPlaca("AXZ123");
-		Vehiculo vehiculo = vehiculoTest.build();
-		boolean autorizado;
-
-		// act
-		autorizado = reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca());
-
-		// assert
-		Assert.assertFalse(autorizado);
-
-	}
-
+	
 	@Test
 	public void placaComienzaLetraDiferenteA() {
 		// arrange
