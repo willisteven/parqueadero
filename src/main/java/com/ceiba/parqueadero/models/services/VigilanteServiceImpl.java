@@ -51,23 +51,37 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	@Override
 	public RespuestaJson realizarRegistroVehiculo(JSONObject vehiculojs) {
-		Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
-		return this.validacionReglasParqueadero(vehiculo);
+		RespuestaJson respuesta = null;
+		try {
+			Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
+			respuesta = this.validacionReglasParqueadero(vehiculo);
+		} catch (Exception e) {
+			return new RespuestaJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), false, e.getMessage());
+		}
+		return respuesta;
 
 	}
 
 	@Override
 	public RespuestaJson realizarSalidaVehiculo(JSONObject vehiculojs) {
-		Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
-		return this.realizarSalida(vehiculo);
+		RespuestaJson respuesta = null;
+		try {
+			Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
+			respuesta = this.realizarSalida(vehiculo);
+		} catch (Exception e) {
+			return new RespuestaJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), false, e.getMessage());
+
+		}
+		return respuesta;
+
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<JSONObject> getVehiculosParqueadero() {
 		List<JSONObject> listJsonObject = new ArrayList<>();
-		List<Registro> listRegistros = registroService.buscarRegistrosVehiculosActivos(Constantes.ACTIVO);
 
+		List<Registro> listRegistros = registroService.buscarRegistrosVehiculosActivos(Constantes.ACTIVO);
 		for (Registro registro : listRegistros) {
 			JSONObject json = new JSONObject();
 			json.put(PLACA, registro.getVehiculo().getPlaca());
@@ -97,7 +111,6 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 		}
 		return json;
-
 	}
 
 	public Vehiculo getVehiculoJson(JSONObject vehiculoJs) {
@@ -224,7 +237,6 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		if (!autorizado) {
 			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_AUTORIZADO);
 		}
-
 		this.guardarVehiculoRegistro(vehiculo);
 
 		return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.VEHICULO_INGRESADO);
