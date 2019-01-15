@@ -145,6 +145,35 @@ public class VigilanteServiceTest {
 	}
 
 	@Test
+	public void testCalcularCobroParqueaderoMasDe8Horas() {
+		// arrange
+		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
+		vehiculoTest.withIdVehiculo(1);
+		vehiculoTest.withIdTipoVehiculo(new TipoVehiculo("carro", "tipo de vehiculo carro"));
+
+		Vehiculo vehiculo = vehiculoTest.build();
+
+		LocalDateTime localDateTimeIngreso = LocalDateTime.parse("2019-01-10T10:32");
+		Date fechaIngreso = Date.from(localDateTimeIngreso.atZone(ZoneId.systemDefault()).toInstant());
+		LocalDateTime localDateTimeSalida = LocalDateTime.parse("2019-01-10T21:33");
+		Date fechaSalida = Date.from(localDateTimeSalida.atZone(ZoneId.systemDefault()).toInstant());
+
+		Precio precioPorHora = new Precio(1, vehiculo.getIdTipoVehiculo(), new TipoTiempo(1, "hora"), 1000);
+		Precio precioPorDia = new Precio(3, vehiculo.getIdTipoVehiculo(), new TipoTiempo(3, "dia"), 8000);
+
+		when(this.precioService.obtenerPrecioPorTipoVehiculoYTiempo(vehiculo.getIdTipoVehiculo().getIdTipoVehiculo(),
+				1)).thenReturn(precioPorHora);
+		when(this.precioService.obtenerPrecioPorTipoVehiculoYTiempo(vehiculo.getIdTipoVehiculo().getIdTipoVehiculo(),
+				2)).thenReturn(precioPorDia);
+
+		// act
+		int cantidadAPagar = this.vigilante.calcularCobroParqueadero(vehiculo, fechaIngreso, fechaSalida);
+
+		// assert
+		Assert.assertEquals(8000, cantidadAPagar);
+	}
+
+	@Test
 	public void testCalcularCobroParqueaderoMotoPorCilindraje() {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
@@ -322,6 +351,26 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	public void testNoPermitirIngresoTipoVehiculoInvalido() {
+		// arrange
+
+		RespuestaJson respuestaJson;
+		JSONObject jsonVehiculo = new JSONObject();
+		jsonVehiculo.put("tipo", "bus");
+		jsonVehiculo.put("placa", "ZAS589");
+		jsonVehiculo.put("cilindraje", 0);
+		TipoVehiculo tipoVehiculo = null;
+
+		when(this.tipoVehiculoService.consultarTipoVehiculo("bus")).thenReturn(tipoVehiculo);
+
+		// act
+		respuestaJson = this.vigilante.realizarRegistroVehiculo(jsonVehiculo);
+		// assert
+		Assert.assertEquals(Constantes.NO_PERMITIDO, respuestaJson.getDescripcion());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testRealizarSalida() {
 		// arrange
 		RegistroTestDataBuilder registroTest = new RegistroTestDataBuilder();
@@ -350,6 +399,26 @@ public class VigilanteServiceTest {
 		respuestaJson = this.vigilante.realizarSalidaVehiculo(jsonVehiculo);
 		// assert
 		Assert.assertEquals(200, respuestaJson.getCodigoRespuesta());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testRealizarSalidaNoEstaParqueadero() {
+		// arrange
+		Registro registro = null;
+		RespuestaJson respuestaJson;
+		JSONObject jsonVehiculo = new JSONObject();
+		jsonVehiculo.put("tipo", "carro");
+		jsonVehiculo.put("placa", "XYZ123");
+		jsonVehiculo.put("cilindraje", 0);
+
+		when(this.registroService.buscarVehiculoPorPlaca("XYZ123")).thenReturn(registro);
+		when(this.tipoVehiculoService.consultarTipoVehiculo("carro"))
+				.thenReturn(new TipoVehiculo("moto", "Tipo de vehiculo moto"));
+		// act
+		respuestaJson = this.vigilante.realizarSalidaVehiculo(jsonVehiculo);
+		// assert
+		Assert.assertEquals(Constantes.VEHICULO_NO_ESTA_PARQUEADERO, respuestaJson.getDescripcion());
 	}
 
 	@Test
@@ -389,6 +458,5 @@ public class VigilanteServiceTest {
 		Assert.assertEquals("XYZ123", objectJson.get("placa"));
 
 	}
-	
 
 }

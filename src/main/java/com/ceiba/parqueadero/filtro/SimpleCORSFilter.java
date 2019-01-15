@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class SimpleCORSFilter implements Filter {
 
-	private static final Logger log = LoggerFactory.getLogger(SimpleCORSFilter.class);
+	private static final Logger LOGGER  = LoggerFactory.getLogger(SimpleCORSFilter.class);
 
 	public SimpleCORSFilter() {
-		log.info("SimpleCORSFilter init");
+		LOGGER .info("SimpleCORSFilter init");
 	}
 
 	@Override
