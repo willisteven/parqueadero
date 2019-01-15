@@ -220,7 +220,7 @@ public class VigilanteServiceTest {
 	public void testGuardarVehiculoRegistro() {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTestDataBuilder = new VehiculoTestDataBuilder();
-		int valor =0;
+		int valor = 0;
 		Vehiculo vehiculo = vehiculoTestDataBuilder.build();
 		Date fechaEntrada = new Date();
 		Registro registroDeEntrada = new Registro(1, fechaEntrada, null, 0, vehiculo);

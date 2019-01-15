@@ -46,7 +46,7 @@ public class VigilanteRestController {
 	}
 	
 	@GetMapping(path = "/trmsuperfinanciera", produces = "application/json")
-	public RespuestaJson valorTrm() throws RemoteException, ParseException {
+	public RespuestaJson valorTRM() throws RemoteException, ParseException {
 		return vigilanteService.obtenerTrm();
 	}
 }
