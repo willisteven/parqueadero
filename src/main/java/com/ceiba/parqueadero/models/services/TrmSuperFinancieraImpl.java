@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ import co.com.sc.nexura.superfinanciera.action.generic.services.trm.action.TcrmR
 @Service
 public class TrmSuperFinancieraImpl implements ITrmSuperFinancieraService {
 
-	public RespuestaJson obtenerTrm() throws ParseException, RemoteException {
+	public RespuestaJson obtenerTrm() throws RemoteException {
 
 		DecimalFormat decimalFormat = new DecimalFormat(Constantes.VALUE_QUERY_FORMAT);
 		TCRMServicesInterfaceProxy proxy = new TCRMServicesInterfaceProxy(Constantes.WEB_SERVICE_URL);

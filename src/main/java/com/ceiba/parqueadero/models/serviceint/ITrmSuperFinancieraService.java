@@ -6,6 +6,6 @@ import java.text.ParseException;
 import com.ceiba.parqueadero.util.RespuestaJson;
 
 public interface ITrmSuperFinancieraService {
-	public RespuestaJson obtenerTrm() throws ParseException, RemoteException;
+	public RespuestaJson obtenerTrm() throws RemoteException;
 
 }

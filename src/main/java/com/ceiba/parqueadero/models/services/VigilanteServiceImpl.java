@@ -240,7 +240,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	}
 
-	public RespuestaJson obtenerTrm() throws RemoteException, ParseException {
+	public RespuestaJson obtenerTrm() throws RemoteException {
 		return this.trmService.obtenerTrm();
 	}
 

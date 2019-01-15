@@ -20,5 +20,5 @@ public interface IVigilanteService {
 		
 	public JSONObject getCilindrajeMoto(String placa);
 
-	public RespuestaJson obtenerTrm() throws ParseException, RemoteException;
+	public RespuestaJson obtenerTrm() throws RemoteException;
 }
