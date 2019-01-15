@@ -1,7 +1,7 @@
 package com.ceiba.parqueadero.models.serviceint;
 
 import java.rmi.RemoteException;
-import java.text.ParseException;
+
 import java.util.List;
 
 import org.json.simple.JSONObject;

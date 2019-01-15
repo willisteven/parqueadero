@@ -1,5 +1,8 @@
 package com.ceiba.parqueadero.reglas;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,8 +15,6 @@ public class ReglasParqueadero2Test {
 
 	@Test
 	public void TestDisponibilidadVehiculoCarro() {
-		System.out.println("prueba: ");
-
 		// arrange
 		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
@@ -29,7 +30,6 @@ public class ReglasParqueadero2Test {
 		Assert.assertTrue(disponible);
 
 	}
-
 
 	@Test
 	public void TestDisponibilidadVehiculoNoDisponible() {
@@ -67,7 +67,7 @@ public class ReglasParqueadero2Test {
 		Assert.assertTrue(disponible);
 
 	}
-	
+
 	@Test
 	public void TestValidarPlacaLunesDomingos() {
 		// arrange
@@ -85,5 +85,29 @@ public class ReglasParqueadero2Test {
 
 	}
 
+	@Test
+	public void TestValidarPlacaLunesDomingosComnienzaA() {
+		// arrange
+		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
+		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
+		vehiculoTest.withPlaca("AZA234");
+		Vehiculo vehiculo = vehiculoTest.build();
+		boolean autorizado;
+
+		// act
+		autorizado = reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca());
+
+		Calendar fechaPrestamo = Calendar.getInstance();
+		fechaPrestamo.setTime(new Date());
+		if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
+				|| fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+			// assert
+			Assert.assertTrue(autorizado);
+		} else {
+			// assert
+			Assert.assertFalse(autorizado);
+		}
+
+	}
 
 }

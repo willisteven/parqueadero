@@ -39,9 +39,7 @@ import org.mockito.MockitoAnnotations;
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
-//@TestPropertySource(locations = "classpath:test.properties")
 public class VigilanteServiceTest {
-//prueba cmmit
 	@Mock
 	private ITipoVehiculoService tipoVehiculoService;
 
@@ -85,6 +83,7 @@ public class VigilanteServiceTest {
 	public void testValidarTipoVehiculoMoto() {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
+		vehiculoTest.withCilindraje(400);
 		vehiculoTest.withIdTipoVehiculo(new TipoVehiculo("moto", "Tipo Vehiculo Moto"));
 		Vehiculo vehiculo = vehiculoTest.build();
 
@@ -122,7 +121,6 @@ public class VigilanteServiceTest {
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 		vehiculoTest.withIdVehiculo(1);
 		vehiculoTest.withIdTipoVehiculo(new TipoVehiculo("carro", "tipo de vehiculo carro"));
-		vehiculoTest.withCilindraje(0);
 
 		Vehiculo vehiculo = vehiculoTest.build();
 
@@ -353,5 +351,44 @@ public class VigilanteServiceTest {
 		// assert
 		Assert.assertEquals(200, respuestaJson.getCodigoRespuesta());
 	}
+
+	@Test
+	public void testGetVehiculosParqueadero() {
+		List<JSONObject> listJson = new ArrayList<JSONObject>();
+		List<Registro> listRegistro = new ArrayList<Registro>();
+		RegistroTestDataBuilder registroTest = new RegistroTestDataBuilder();
+		Registro registro = registroTest.build();
+		listRegistro.add(registro);
+		// arrange
+		when(this.registroService.buscarRegistrosVehiculosActivos(Constantes.ACTIVO)).thenReturn(listRegistro);
+
+		// act
+
+		listJson = this.vigilante.getVehiculosParqueadero();
+
+		// assert
+
+		Assert.assertEquals("XYZ123", listJson.get(0).get("placa"));
+
+	}
+
+	@Test
+	public void testGetCilindrajeMoto() {
+		JSONObject objectJson = new JSONObject();
+		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
+		vehiculoTest.withPlaca("XYZ123");
+		Vehiculo vehiculo = vehiculoTest.build();
+		// arrange
+		when(this.vehiculoService.buscarCilindraje(vehiculo.getPlaca(), Constantes.ACTIVO)).thenReturn(vehiculo);
+
+		// act
+		objectJson = this.vigilante.getCilindrajeMoto(vehiculo.getPlaca());
+
+		// assert
+
+		Assert.assertEquals("XYZ123", objectJson.get("placa"));
+
+	}
+	
 
 }

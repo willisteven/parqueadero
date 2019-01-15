@@ -2,7 +2,6 @@ package com.ceiba.parqueadero.models.services;
 
 import java.rmi.RemoteException;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 

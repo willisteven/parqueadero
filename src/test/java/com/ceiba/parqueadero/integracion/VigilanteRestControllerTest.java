@@ -1,6 +1,9 @@
 package com.ceiba.parqueadero.integracion;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.json.simple.JSONObject;
@@ -21,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.ceiba.parqueadero.ParqueaderoApplication;
+import com.ceiba.parqueadero.constantes.Constantes;
 import com.ceiba.parqueadero.models.services.RegistroServiceImpl;
 
 @RunWith(SpringRunner.class)
@@ -61,8 +65,7 @@ public class VigilanteRestControllerTest {
 	@Test
 	public void testValorTRM() throws Exception {
 		// arrange
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/trmsuperfinanciera")
-				.contentType(MediaType.APPLICATION_JSON);
+		RequestBuilder requestBuilder = get("/api/trmsuperfinanciera").contentType(MediaType.APPLICATION_JSON);
 		// act
 		mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isOk());
 	}
@@ -70,10 +73,23 @@ public class VigilanteRestControllerTest {
 	@Test
 	public void testGetVehiculosParqueadero() throws Exception {
 		// arrange
-		RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/vehiculosParqueadero")
-				.contentType(MediaType.APPLICATION_JSON);
+		RequestBuilder requestBuilder = get("/api/vehiculosParqueadero").contentType(MediaType.APPLICATION_JSON);
 		// act
 		mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isOk());
+	}
+
+	@Test
+	public void testCilindrajeMoto() throws Exception {
+		this.mockMvc.perform(get("/api/cilindraje/{placa}", "XYZ123")).andDo(print()).andExpect(status().isOk());
+
+	}
+
+	@Test
+	public void testCilindrajeMotoNoEsta() throws Exception {
+		this.mockMvc.perform(get("/api/cilindraje/{placa}", "XYZ123")).andDo(print()).andExpect(status().isOk())
+				.andExpect(content().contentType("application/json;charset=UTF-8"))
+				.andExpect(jsonPath("$.Mensaje").value(Constantes.VEHICULO_NO_ESTA_PARQUEADERO));
+
 	}
 
 }

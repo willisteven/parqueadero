@@ -12,7 +12,6 @@ import com.ceiba.parqueadero.models.serviceint.IVigilanteService;
 import com.ceiba.parqueadero.util.RespuestaJson;
 
 import java.rmi.RemoteException;
-import java.text.ParseException;
 import java.util.List;
 
 import org.json.simple.JSONObject;
