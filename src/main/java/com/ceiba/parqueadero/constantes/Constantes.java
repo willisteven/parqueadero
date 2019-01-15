@@ -17,8 +17,11 @@ public class Constantes {
 	public static final String VEHICULO_INGRESADO = "El Vehiculo fue Ingresado al parqueadero correctamente";
 	public static final String VEHICULO_NO_ESTA_PARQUEADERO = "El vehiculo no se encuentra en el parqueadero actualmente";
 
-	public static final int HORA = 3600000;
-	public static final int DIA = 86400000;
+	public static final int VALOR_HORA = 3600000;
+	public static final int VALOR_DIA = 86400000;
+	
+	public static final int ID_HORA=1;
+	public static final int ID_DIA=2;
 
 	public static final int CILINDRAJE_TOPE = 500;
 	public static final int VALOR_CILINDRAJE_EXTRA = 2000;

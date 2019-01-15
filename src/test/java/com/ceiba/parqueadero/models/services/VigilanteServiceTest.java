@@ -1,5 +1,6 @@
-package com.ceiba.parqueadero.unitarias;
+package com.ceiba.parqueadero.models.services;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -18,25 +19,28 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.ceiba.parqueadero.constantes.Constantes;
 import com.ceiba.parqueadero.models.entity.Precio;
+import com.ceiba.parqueadero.models.entity.Registro;
 import com.ceiba.parqueadero.models.entity.TipoTiempo;
 import com.ceiba.parqueadero.models.entity.TipoVehiculo;
 import com.ceiba.parqueadero.models.serviceint.IPrecioService;
+import com.ceiba.parqueadero.models.serviceint.IRegistroService;
 import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
 import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
 import com.ceiba.parqueadero.models.services.VigilanteServiceImpl;
-import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
+import com.ceiba.parqueadero.testdatabuilder.RegistroTestDataBuilder;
 import com.ceiba.parqueadero.testdatabuilder.VehiculoTestDataBuilder;
 import com.ceiba.parqueadero.util.RespuestaJson;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
 @SpringBootTest
 //@TestPropertySource(locations = "classpath:test.properties")
-public class VigilanteTest {
+public class VigilanteServiceTest {
 //prueba cmmit
 	@Mock
 	private ITipoVehiculoService tipoVehiculoService;
@@ -47,12 +51,19 @@ public class VigilanteTest {
 	@Mock
 	private IPrecioService precioService;
 
+	@Mock
+	private IRegistroService registroService;
+
 	@InjectMocks
 	private VigilanteServiceImpl vigilante;
 
+	@org.junit.Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
+	}
+
 	@Test
-	public void validarTipoVehiculoCarro() {
-		System.out.println("prueba: ");
+	public void testValidarTipoVehiculoCarro() {
 
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
@@ -66,21 +77,20 @@ public class VigilanteTest {
 		tipoVehiculo = this.vigilante.validarTipoVehiculo(vehiculo.getIdTipoVehiculo().getTipo());
 
 		// assert
-
 		Assert.assertNotNull(tipoVehiculo);
 
 	}
 
 	@Test
-	public void validarTipoVehiculoMoto() {
+	public void testValidarTipoVehiculoMoto() {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 		vehiculoTest.withIdTipoVehiculo(new TipoVehiculo("moto", "Tipo Vehiculo Moto"));
 		Vehiculo vehiculo = vehiculoTest.build();
 
 		TipoVehiculo tipoVehiculo = new TipoVehiculo("moto", "Tipo vehiculo moto");
-		when(this.tipoVehiculoService.consultarTipoVehiculo("moto")).thenReturn(tipoVehiculo); 
-		
+		when(this.tipoVehiculoService.consultarTipoVehiculo("moto")).thenReturn(tipoVehiculo);
+
 		// act
 		tipoVehiculo = this.vigilante.validarTipoVehiculo(vehiculo.getIdTipoVehiculo().getTipo());
 
@@ -90,7 +100,7 @@ public class VigilanteTest {
 	}
 
 	@Test
-	public void validarTipoVehiculoInvalido() {
+	public void testValidarTipoVehiculoInvalido() {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 		vehiculoTest.withIdTipoVehiculo(new TipoVehiculo("bus", "Tipo Vehiculo Bus"));
@@ -107,85 +117,7 @@ public class VigilanteTest {
 	}
 
 	@Test
-	public void validarCarrosParqueaderoDisponible() {
-		System.out.println("prueba: ");
-
-		// arrange
-		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
-		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
-		vehiculoTest.withIdTipoVehiculo(new TipoVehiculo("carro", "tipo de vehiculo carro"));
-		Vehiculo vehiculo = vehiculoTest.build();
-		boolean disponible;
-		int cantidad = 19;
-
-		// act
-		disponible = reglasParqueadero.disponibilidadVehiculo(cantidad, vehiculo.getIdTipoVehiculo().getTipo());
-
-		// assert
-		Assert.assertTrue(disponible);
-
-	}
-
-	@Test
-	public void validarVehiculosParqueaderoNoDisponible() {
-		System.out.println("prueba: ");
-
-		// arrange
-		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
-		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
-		vehiculoTest.withIdTipoVehiculo(new TipoVehiculo("carro", "tipo de vehiculo carro"));
-		Vehiculo vehiculo = vehiculoTest.build();
-		boolean disponible;
-		int cantidad = 20;
-
-		// act
-		disponible = reglasParqueadero.disponibilidadVehiculo(cantidad, vehiculo.getIdTipoVehiculo().getTipo());
-
-		// assert
-		Assert.assertFalse(disponible);
-
-	}
-
-	@Test
-	public void validarMotosParqueaderoDisponible() {
-		System.out.println("prueba: ");
-
-		// arrange
-		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
-		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
-		vehiculoTest.withIdTipoVehiculo(new TipoVehiculo("moto", "tipo de vehiculo moto"));
-		Vehiculo vehiculo = vehiculoTest.build();
-		boolean disponible;
-		int cantidad = 9;
-
-		// act
-		disponible = reglasParqueadero.disponibilidadVehiculo(cantidad, vehiculo.getIdTipoVehiculo().getTipo());
-
-		// assert
-		Assert.assertTrue(disponible);
-
-	}
-	
-	@Test
-	public void placaComienzaLetraDiferenteA() {
-		// arrange
-		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
-		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
-		vehiculoTest.withPlaca("XZA234");
-		Vehiculo vehiculo = vehiculoTest.build();
-		boolean autorizado;
-
-		// act
-		autorizado = reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca());
-
-		// assert
-		Assert.assertTrue(autorizado);
-
-	}
-
-	
-	@Test
-	public void calcularCobroCarro() {
+	public void testCalcularCobroParqueaderoCarro() {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 		vehiculoTest.withIdVehiculo(1);
@@ -215,7 +147,7 @@ public class VigilanteTest {
 	}
 
 	@Test
-	public void calcularCobroMotoPorCilindraje() {
+	public void testCalcularCobroParqueaderoMotoPorCilindraje() {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 		vehiculoTest.withIdVehiculo(1);
@@ -246,7 +178,7 @@ public class VigilanteTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void convertirJSONaVehiculo() {
+	public void testGetVehiculoJson() {
 		// arrange
 		JSONObject jsonVehiculo = new JSONObject();
 		jsonVehiculo.put("tipo", "carro");
@@ -266,7 +198,7 @@ public class VigilanteTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void convertirJSONaVehiculoTipoNull() {
+	public void testgetVehiculoJsonTipoNull() {
 		// arrange
 		JSONObject jsonVehiculo = new JSONObject();
 		jsonVehiculo.put("tipo", "bus");
@@ -284,42 +216,142 @@ public class VigilanteTest {
 
 	}
 
-	/*
-	 * @Test public void realizarRegistroVehiculo() { // arrange JSONObject
-	 * jsonVehiculo = new JSONObject(); jsonVehiculo.put("tipo", "carro");
-	 * jsonVehiculo.put("placa", "ZAS589"); jsonVehiculo.put("cilindraje", 0);
-	 * 
-	 * RespuestaJson jsonRespuesta;
-	 * 
-	 * TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
-	 * when(this.tipoVehiculoService.consultarTipoVehiculo("carro")).thenReturn(
-	 * tipoVehiculo); boolean isVehiculoExiste = true;
-	 * when(this.vehiculoService.vehiculoExiste("carro",
-	 * Constantes.ACTIVO)).thenReturn(isVehiculoExiste); List<Vehiculo>
-	 * listVehiculos= new ArrayList<Vehiculo>(); listVehiculos.add(new
-	 * Vehiculo(1,"ZAS589",tipoVehiculo,0,Constantes.ACTIVO));
-	 * when(this.vehiculoService.buscarPorTipoVehiculoActivo("carro",
-	 * Constantes.ACTIVO)).thenReturn(listVehiculos);
-	 * 
-	 * 
-	 * // act jsonRespuesta = this.vigilante.realizarRegistroVehiculo(jsonVehiculo);
-	 * 
-	 * // assert Assert.assertEquals(true, jsonRespuesta.getValido());
-	 * 
-	 * }
-	 */
-
-	/*@Test
-	public void buscarTodosVehiculos() {
+	@Test
+	public void testGuardarVehiculoRegistro() {
 		// arrange
-		List<Vehiculo> vehiculos;
+		VehiculoTestDataBuilder vehiculoTestDataBuilder = new VehiculoTestDataBuilder();
+		int valor =0;
+		Vehiculo vehiculo = vehiculoTestDataBuilder.build();
+		Date fechaEntrada = new Date();
+		Registro registroDeEntrada = new Registro(1, fechaEntrada, null, 0, vehiculo);
+		doNothing().when(vehiculoService).guardarVehiculo(vehiculo);
+		doNothing().when(registroService).guardarRegistro(registroDeEntrada);
+		// act
+		this.vigilante.guardarVehiculoRegistro(vehiculo);
+		// assert
+		Assert.assertEquals(0, valor);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testRealizarRegistroVehiculo() {
+		// arrange
+		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
+
+		List<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
+		RespuestaJson respuestaJson;
+		JSONObject jsonVehiculo = new JSONObject();
+		jsonVehiculo.put("tipo", "carro");
+		jsonVehiculo.put("placa", "ZAS589");
+		jsonVehiculo.put("cilindraje", 0);
+		boolean isVehiculoExiste = false;
+		TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
+
+		listVehiculos.add(vehiculoTest.build());
+		when(this.tipoVehiculoService.consultarTipoVehiculo("carro")).thenReturn(tipoVehiculo);
+
+		when(this.vehiculoService.vehiculoExiste("ZAS589", Constantes.ACTIVO)).thenReturn(isVehiculoExiste);
+
+		when(this.vehiculoService.buscarPorTipoVehiculoActivo(tipoVehiculo.getTipo(), Constantes.ACTIVO))
+				.thenReturn(listVehiculos);
 
 		// act
-		vehiculos = this.vehiculoService.findAll();
-
+		respuestaJson = this.vigilante.realizarRegistroVehiculo(jsonVehiculo);
 		// assert
-		Assert.assertNotNull(vehiculos);
+		Assert.assertEquals(200, respuestaJson.getCodigoRespuesta());
+	}
 
-	}*/
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testNoPermitirIngresoSinDisponibilidad() {
+		// arrange
+		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
+
+		List<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
+		RespuestaJson respuestaJson;
+		JSONObject jsonVehiculo = new JSONObject();
+		jsonVehiculo.put("tipo", "carro");
+		jsonVehiculo.put("placa", "ZAS589");
+		jsonVehiculo.put("cilindraje", 0);
+		boolean isVehiculoExiste = false;
+		TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
+
+		for (int i = 0; i <= 20; i++) {
+			listVehiculos.add(vehiculoTest.build());
+		}
+		when(this.tipoVehiculoService.consultarTipoVehiculo("carro")).thenReturn(tipoVehiculo);
+
+		when(this.vehiculoService.vehiculoExiste("ZAS589", Constantes.ACTIVO)).thenReturn(isVehiculoExiste);
+
+		when(this.vehiculoService.buscarPorTipoVehiculoActivo(tipoVehiculo.getTipo(), Constantes.ACTIVO))
+				.thenReturn(listVehiculos);
+
+		// act
+		respuestaJson = this.vigilante.realizarRegistroVehiculo(jsonVehiculo);
+		// assert
+		Assert.assertEquals(Constantes.NO_CUPO_DISPONIBLE, respuestaJson.getDescripcion());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testNoPermitirIngresoYaEstaParqueadero() {
+		// arrange
+		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
+
+		List<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
+		RespuestaJson respuestaJson;
+		JSONObject jsonVehiculo = new JSONObject();
+		jsonVehiculo.put("tipo", "carro");
+		jsonVehiculo.put("placa", "ZAS589");
+		jsonVehiculo.put("cilindraje", 0);
+		boolean isVehiculoExiste = true;
+		TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
+
+		listVehiculos.add(vehiculoTest.build());
+
+		when(this.tipoVehiculoService.consultarTipoVehiculo("carro")).thenReturn(tipoVehiculo);
+
+		when(this.vehiculoService.vehiculoExiste("ZAS589", Constantes.ACTIVO)).thenReturn(isVehiculoExiste);
+
+		when(this.vehiculoService.buscarPorTipoVehiculoActivo(tipoVehiculo.getTipo(), Constantes.ACTIVO))
+				.thenReturn(listVehiculos);
+
+		// act
+		respuestaJson = this.vigilante.realizarRegistroVehiculo(jsonVehiculo);
+		// assert
+		Assert.assertEquals(Constantes.YA_ESTA_PARQUEADERO, respuestaJson.getDescripcion());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testRealizarSalida() {
+		// arrange
+		RegistroTestDataBuilder registroTest = new RegistroTestDataBuilder();
+		Registro registro = registroTest.build();
+		RespuestaJson respuestaJson;
+		JSONObject jsonVehiculo = new JSONObject();
+		jsonVehiculo.put("tipo", "carro");
+		jsonVehiculo.put("placa", "XYZ123");
+		jsonVehiculo.put("cilindraje", 0);
+
+		when(this.registroService.buscarVehiculoPorPlaca("XYZ123")).thenReturn(registro);
+		when(this.tipoVehiculoService.consultarTipoVehiculo("carro"))
+				.thenReturn(registro.getVehiculo().getIdTipoVehiculo());
+		Precio precioPorHora = new Precio(1, registro.getVehiculo().getIdTipoVehiculo(), new TipoTiempo(1, "hora"),
+				1000);
+		Precio precioPorDia = new Precio(3, registro.getVehiculo().getIdTipoVehiculo(), new TipoTiempo(3, "dia"), 8000);
+
+		when(this.precioService
+				.obtenerPrecioPorTipoVehiculoYTiempo(registro.getVehiculo().getIdTipoVehiculo().getIdTipoVehiculo(), 1))
+						.thenReturn(precioPorHora);
+		when(this.precioService
+				.obtenerPrecioPorTipoVehiculoYTiempo(registro.getVehiculo().getIdTipoVehiculo().getIdTipoVehiculo(), 2))
+						.thenReturn(precioPorDia);
+
+		// act
+		respuestaJson = this.vigilante.realizarSalidaVehiculo(jsonVehiculo);
+		// assert
+		Assert.assertEquals(200, respuestaJson.getCodigoRespuesta());
+	}
 
 }

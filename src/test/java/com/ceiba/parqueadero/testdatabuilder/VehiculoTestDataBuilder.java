@@ -1,11 +1,5 @@
 package com.ceiba.parqueadero.testdatabuilder;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 import com.ceiba.parqueadero.models.entity.TipoVehiculo;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
@@ -21,7 +15,7 @@ public class VehiculoTestDataBuilder {
 	public VehiculoTestDataBuilder() {
 		this.idVehiculo = 1;
 		this.placa = "";
-		this.idTipoVehiculo = new TipoVehiculo("", "");
+		this.idTipoVehiculo = new TipoVehiculo("carro", "Tipo de vehiculo carro");
 		this.cilindraje = 400;
 		this.activo = 1;
 	}

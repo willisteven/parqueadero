@@ -13,9 +13,9 @@ public class PrecioTestDataBuilder {
 
 	public PrecioTestDataBuilder() {
 		this.idPrecio=1;
-		this.idTipoVehiculo = new TipoVehiculo("", "");
+		this.idTipoVehiculo = new TipoVehiculo("moto", "el tipo de vehiculo es una moto");
 		this.idTipoTiempo= new TipoTiempo(1,"Hora");
-		this.valor= 1000;
+		this.valor= 500;
 	}
 	
 	public PrecioTestDataBuilder withIdPrecio(int idPrecio) {

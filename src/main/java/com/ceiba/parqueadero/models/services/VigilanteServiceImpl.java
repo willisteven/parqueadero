@@ -2,9 +2,8 @@ package com.ceiba.parqueadero.models.services;
 
 import java.rmi.RemoteException;
 
-
 import java.text.ParseException;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import java.util.Date;
@@ -29,9 +28,6 @@ import com.ceiba.parqueadero.models.entity.Precio;
 import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 import com.ceiba.parqueadero.util.RespuestaJson;
 
-
-
-
 @Service
 public class VigilanteServiceImpl implements IVigilanteService {
 
@@ -50,7 +46,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	@Autowired
 	private ITipoVehiculoService tipoVehiculoService;
-	
+
 	@Autowired
 	private ITrmSuperFinancieraService trmService;
 
@@ -77,7 +73,10 @@ public class VigilanteServiceImpl implements IVigilanteService {
 			JSONObject json = new JSONObject();
 			json.put(PLACA, registro.getVehiculo().getPlaca());
 			json.put("tipo", registro.getVehiculo().getIdTipoVehiculo().getTipo());
-			json.put("ingresoFecha", registro.getIngresoFecha());
+
+			String formatoFecha = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(registro.getIngresoFecha());
+
+			json.put("ingresoFecha", formatoFecha);
 
 			listJsonObject.add(json);
 		}
@@ -140,7 +139,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 			this.registroService.guardarRegistro(registro);
 			return new RespuestaJson(HttpStatus.OK.value(), true,
 					"El vehiculo con placa " + vehiculo.getPlaca() + " ingreso en la fecha: "
-							+ registro.getIngresoFecha() + "y el valor del alquiler del parqueadero es: " + costo);
+							+ registro.getIngresoFecha() + " y el valor del alquiler del parqueadero es: " + costo);
 
 		} else {
 
@@ -153,14 +152,14 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		long ingresoFechaTime = ingresoFecha.getTime();
 		long salidaFechaTime = salidaFecha.getTime();
 
-		Precio precioHora = this.precioService
-				.obtenerPrecioPorTipoVehiculoYTiempo(vehiculo.getIdTipoVehiculo().getIdTipoVehiculo(), 1);
-		Precio precioDia = this.precioService
-				.obtenerPrecioPorTipoVehiculoYTiempo(vehiculo.getIdTipoVehiculo().getIdTipoVehiculo(), 2);
+		Precio precioHora = this.precioService.obtenerPrecioPorTipoVehiculoYTiempo(
+				vehiculo.getIdTipoVehiculo().getIdTipoVehiculo(), Constantes.ID_HORA);
+		Precio precioDia = this.precioService.obtenerPrecioPorTipoVehiculoYTiempo(
+				vehiculo.getIdTipoVehiculo().getIdTipoVehiculo(), Constantes.ID_DIA);
 
 		int cantidadHoras = 1;
-		cantidadHoras += calcularTiempoEnElParqueadero(ingresoFechaTime, salidaFechaTime, Constantes.HORA);
-		int cantidadDias = calcularTiempoEnElParqueadero(ingresoFechaTime, salidaFechaTime, Constantes.DIA);
+		cantidadHoras += calcularTiempoEnElParqueadero(ingresoFechaTime, salidaFechaTime, Constantes.VALOR_HORA);
+		int cantidadDias = calcularTiempoEnElParqueadero(ingresoFechaTime, salidaFechaTime, Constantes.VALOR_DIA);
 
 		cantidadHoras -= (cantidadDias * 24);
 
@@ -240,9 +239,9 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		registroService.guardarRegistro(registro);
 
 	}
-	
+
 	public RespuestaJson obtenerTrm() throws RemoteException, ParseException {
-		return this.trmService.obtenerTrm(); 
+		return this.trmService.obtenerTrm();
 	}
-	
+
 }
