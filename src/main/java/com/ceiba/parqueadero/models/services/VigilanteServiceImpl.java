@@ -240,12 +240,12 @@ public class VigilanteServiceImpl implements IVigilanteService {
 		this.guardarVehiculoRegistro(vehiculo);
 
 		return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.VEHICULO_INGRESADO);
-
 	}
 
 	public void guardarVehiculoRegistro(Vehiculo vehiculo) {
 		Date ingresoFecha = new Date();
 		Registro registro = new Registro(0, ingresoFecha, null, 0, vehiculo);
+
 		vehiculoService.guardarVehiculo(vehiculo);
 		registroService.guardarRegistro(registro);
 
