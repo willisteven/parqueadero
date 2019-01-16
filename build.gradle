@@ -37,6 +37,8 @@ dependencies {
 	compile fileTree(dir: 'libs', include: '*.jar')
 	runtimeOnly 'com.h2database:h2'
 	compile files('lib/trm_superfinanciera.jar')
+	compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.141.59'
+	compile group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '3.141.59'
 	
 
 }

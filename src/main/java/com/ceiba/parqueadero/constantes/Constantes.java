@@ -25,6 +25,9 @@ public final class Constantes {
 
 	public static final int CILINDRAJE_TOPE = 500;
 	public static final int VALOR_CILINDRAJE_EXTRA = 2000;
+	public static final int HORAS_LIMTE = 8;
+	public static final int VALOR_INICIAL=0;
+	
 
 	/**
 	 * Valid from and valid to TCRM date format

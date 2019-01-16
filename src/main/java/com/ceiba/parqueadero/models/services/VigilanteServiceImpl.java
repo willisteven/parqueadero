@@ -175,7 +175,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 		cantidadHoras -= (cantidadDias * 24);
 
-		if (cantidadHoras > 8) {
+		if (cantidadHoras > Constantes.HORAS_LIMTE) {
 			cantidadHoras = 0;
 			cantidadDias++;
 		}
@@ -244,7 +244,7 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	public void guardarVehiculoRegistro(Vehiculo vehiculo) {
 		Date ingresoFecha = new Date();
-		Registro registro = new Registro(0, ingresoFecha, null, 0, vehiculo);
+		Registro registro = new Registro(0, ingresoFecha, null, Constantes.VALOR_INICIAL, vehiculo);
 
 		vehiculoService.guardarVehiculo(vehiculo);
 		registroService.guardarRegistro(registro);
