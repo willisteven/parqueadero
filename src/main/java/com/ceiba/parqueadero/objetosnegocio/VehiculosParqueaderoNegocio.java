@@ -1,6 +1,5 @@
 package com.ceiba.parqueadero.objetosnegocio;
 
-import java.util.Date;
 
 public class VehiculosParqueaderoNegocio {
 

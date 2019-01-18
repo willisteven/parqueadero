@@ -35,7 +35,6 @@ public class VigilanteServiceImpl implements VigilanteService {
 
 	ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
 
-	private static final String PLACA = "placa";
 
 	@Autowired
 	private RegistroService registroService;
