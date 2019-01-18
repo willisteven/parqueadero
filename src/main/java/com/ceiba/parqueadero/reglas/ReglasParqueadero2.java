@@ -4,6 +4,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class ReglasParqueadero2 {
+	private Calendar fechaPrestamo;
+
+	public ReglasParqueadero2() {
+		fechaPrestamo = Calendar.getInstance();
+
+	}
 
 	public boolean disponibilidadVehiculo(int cantidad, String tipovehiculo) {
 		boolean flag = false;
@@ -30,7 +36,6 @@ public class ReglasParqueadero2 {
 		boolean isAutorizado = true;
 		String letraUp = placa.toUpperCase().substring(0, 1);
 		if (("A").equals(letraUp)) {
-			Calendar fechaPrestamo = Calendar.getInstance();
 			fechaPrestamo.setTime(new Date());
 			if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
 					|| fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
@@ -40,5 +45,9 @@ public class ReglasParqueadero2 {
 			}
 		}
 		return isAutorizado;
+	}
+
+	public void setCalendar(Calendar c) {
+		fechaPrestamo = c;
 	}
 }

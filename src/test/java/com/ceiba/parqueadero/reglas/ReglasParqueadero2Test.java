@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.ceiba.parqueadero.models.entity.TipoVehiculo;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
@@ -94,20 +95,29 @@ public class ReglasParqueadero2Test {
 		Vehiculo vehiculo = vehiculoTest.build();
 		boolean autorizado;
 
+		Calendar c = Mockito.mock(Calendar.class);
+		Mockito.when(c.get(Calendar.DAY_OF_WEEK)).thenReturn(Calendar.SUNDAY);
+		reglasParqueadero.setCalendar(c);
 		// act
 		autorizado = reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca());
+		Assert.assertTrue(autorizado);
+	}
+	
+	@Test
+	public void TestValidarPlacaLunesDomingosNoAutorizado() {
+		// arrange
+		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
+		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
+		vehiculoTest.withPlaca("AZA234");
+		Vehiculo vehiculo = vehiculoTest.build();
+		boolean autorizado;
 
-		Calendar fechaPrestamo = Calendar.getInstance();
-		fechaPrestamo.setTime(new Date());
-		if (fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY
-				|| fechaPrestamo.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-			// assert
-			Assert.assertTrue(autorizado);
-		} else {
-			// assert
-			Assert.assertFalse(autorizado);
-		}
-
+		Calendar c = Mockito.mock(Calendar.class);
+		Mockito.when(c.get(Calendar.DAY_OF_WEEK)).thenReturn(Calendar.FRIDAY);
+		reglasParqueadero.setCalendar(c);
+		// act
+		autorizado = reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca());
+		Assert.assertFalse(autorizado);
 	}
 
 }
