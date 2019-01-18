@@ -2,20 +2,13 @@ package com.ceiba.parqueadero.models.serviceint;
 
 import java.util.List;
 
-
 import com.ceiba.parqueadero.models.entity.Vehiculo;
 
-
 public interface VehiculoService {
-	
-	/**
-	 * Metodo que busca todos los vehiculos
-	 * @return
-	 */
-	public List<Vehiculo> findAll();
-		
+
 	/**
 	 * Metodo que busca vehiculos activos por tipo
+	 * 
 	 * @param tipoVehiculo
 	 * @param estado
 	 * @return
@@ -24,25 +17,27 @@ public interface VehiculoService {
 
 	/**
 	 * Metodo que guarda un vehiculo
+	 * 
 	 * @param vehiculo
 	 */
 	public void guardarVehiculo(Vehiculo vehiculo);
-	
+
 	/**
 	 * Metodo que busca si un vehiculo existe
+	 * 
 	 * @param placa
 	 * @param activo
 	 * @return
 	 */
-	public boolean vehiculoExiste(String placa,int activo);
-	
+	public boolean vehiculoExiste(String placa, int activo);
+
 	/**
 	 * Metodo que busca el cilindraje de un vehiculo
+	 * 
 	 * @param placa
 	 * @param estado
 	 * @return
 	 */
-	public Vehiculo buscarCilindraje(String placa,int estado);
-	
-	
+	public Vehiculo buscarCilindraje(String placa, int estado);
+
 }

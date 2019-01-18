@@ -1,6 +1,5 @@
 package com.ceiba.parqueadero.models.services;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +17,6 @@ public class VehiculoServiceImpl implements VehiculoService {
 
 	@Autowired
 	private IVehiculoDao vehiculoDao;
-
-
-	@Override
-	public List<Vehiculo> findAll() {
-		return (List<Vehiculo>) vehiculoDao.findAll();
-	}
 
 	@Override
 	public List<Vehiculo> buscarPorTipoVehiculoActivo(String tipoVehiculo, int estado) {
@@ -46,8 +39,8 @@ public class VehiculoServiceImpl implements VehiculoService {
 	}
 
 	@Override
-	public Vehiculo buscarCilindraje(String placa,int activo) {
-		Vehiculo vehiculo = vehiculoDao.findByPlacaAndTipoVehiculo(placa,activo);
+	public Vehiculo buscarCilindraje(String placa, int activo) {
+		Vehiculo vehiculo = vehiculoDao.findByPlacaAndTipoVehiculo(placa, activo);
 		if (vehiculo != null) {
 			return vehiculo;
 		} else {

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import com.ceiba.parqueadero.models.serviceint.VehiculoService;
 import com.ceiba.parqueadero.models.services.VigilanteServiceImpl;
 import com.ceiba.parqueadero.objetosnegocio.VehiculoNegocio;
 import com.ceiba.parqueadero.objetosnegocio.VehiculosParqueaderoNegocio;
+import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 import com.ceiba.parqueadero.testdatabuilder.RegistroTestDataBuilder;
 import com.ceiba.parqueadero.testdatabuilder.VehiculoTestDataBuilder;
 import com.ceiba.parqueadero.util.RespuestaJson;
@@ -38,6 +40,7 @@ import com.ceiba.parqueadero.models.exception.VigilanteNotFoundException;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 @RunWith(SpringRunner.class)
@@ -268,7 +271,8 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testRealizarRegistroVehiculo() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
+	public void testRealizarRegistroVehiculo()
+			throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 
@@ -299,7 +303,8 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNoPermitirIngresoSinDisponibilidad() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
+	public void testNoPermitirIngresoSinDisponibilidad()
+			throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 
@@ -332,7 +337,8 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNoPermitirIngresoYaEstaParqueadero() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
+	public void testNoPermitirIngresoYaEstaParqueadero()
+			throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 
@@ -364,7 +370,8 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNoPermitirIngresoTipoVehiculoInvalido() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
+	public void testNoPermitirIngresoTipoVehiculoInvalido()
+			throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 
 		RespuestaJson respuestaJson;
@@ -381,6 +388,30 @@ public class VigilanteServiceTest {
 		respuestaJson = this.vigilante.realizarRegistroVehiculo(jsonVehiculo);
 		// assert
 		Assert.assertEquals(Constantes.NO_PERMITIDO, respuestaJson.getDescripcion());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testNoPermitirIngresoNoAutorizado()
+			throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
+		// arrange
+		ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
+		RespuestaJson respuestaJson;
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("moto");
+		jsonVehiculo.setPlaca("AS589");
+		jsonVehiculo.setCilindraje(200);
+
+		TipoVehiculo tipoVehiculo = new TipoVehiculo("moto", "tipo de vehiculo moto");
+
+		when(this.tipoVehiculoService.consultarTipoVehiculo("moto")).thenReturn(tipoVehiculo);
+		Calendar c = Mockito.mock(Calendar.class);
+		Mockito.when(c.get(Calendar.DAY_OF_WEEK)).thenReturn(Calendar.FRIDAY);
+		reglasParqueadero.setCalendar(c);
+		// act
+		respuestaJson = this.vigilante.realizarRegistroVehiculo(jsonVehiculo);
+		// assert
+		Assert.assertEquals(Constantes.NO_AUTORIZADO, respuestaJson.getDescripcion());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -418,7 +449,8 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testRealizarSalidaNoEstaParqueadero() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
+	public void testRealizarSalidaNoEstaParqueadero()
+			throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		Registro registro = null;
 		RespuestaJson respuestaJson;
