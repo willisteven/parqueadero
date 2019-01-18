@@ -17,12 +17,6 @@ public class RegistroServiceImpl implements RegistroService{
 	@Autowired
 	private IRegistroDao registroDao;
 	
-	
-	@Override
-	@Transactional(readOnly=true)
-	public List<Registro> findAll() {
-		return (List<Registro>) registroDao.findAll();
-	}
 
 	@Override
 	public void guardarRegistro(Registro registro) {

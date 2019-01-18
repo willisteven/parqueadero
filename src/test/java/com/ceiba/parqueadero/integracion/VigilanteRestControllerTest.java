@@ -53,7 +53,6 @@ public class VigilanteRestControllerTest {
 	public void testRealizarRegistroVehiculo() throws Exception {
 		// arrange
 
-		// VehiculoNegocio jsonVehiculo= new VehiculoNegocio("carro", "XYZ123", 0);
 		JSONObject jsonVehiculo = new JSONObject();
 		jsonVehiculo.put("tipo", "carro");
 		jsonVehiculo.put("placa", "XYZ123");
@@ -90,8 +89,33 @@ public class VigilanteRestControllerTest {
 	@Test
 	public void testCilindrajeMotoNoEsta() throws Exception {
 		this.mockMvc.perform(get("/api/cilindraje/{placa}", "XYZ123")).andDo(print()).andExpect(status().isNotFound());
-		
 
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testRealizarSalida() throws Exception {
+		// arrange
+
+		JSONObject jsonVehiculo1 = new JSONObject();
+		jsonVehiculo1.put("tipo", "carro");
+		jsonVehiculo1.put("placa", "XYZ567");
+		jsonVehiculo1.put("cilindraje", 0);
+
+		RequestBuilder requestBuilder1 = MockMvcRequestBuilders.post("/api/registroVehiculo")
+				.contentType(MediaType.APPLICATION_JSON).content(jsonVehiculo1.toJSONString());
+
+		mockMvc.perform(requestBuilder1).andDo(print()).andExpect(status().isOk());
+
+		JSONObject jsonVehiculo = new JSONObject();
+		jsonVehiculo.put("tipo", "carro");
+		jsonVehiculo.put("placa", "XYZ567");
+		jsonVehiculo.put("cilindraje", 0);
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/salidaVehiculo")
+				.contentType(MediaType.APPLICATION_JSON).content(jsonVehiculo.toJSONString());
+		// act
+		mockMvc.perform(requestBuilder).andDo(print()).andExpect(status().isOk());
 	}
 
 }
