@@ -2,7 +2,7 @@ package com.ceiba.parqueadero.models.serviceint;
 
 import com.ceiba.parqueadero.models.entity.Precio;
 
-public interface IPrecioService {
+public interface PrecioService {
 
 	/**
 	 * Metodo que obtiene el precio dependiendo el tipo de vehiculo y el tiempo

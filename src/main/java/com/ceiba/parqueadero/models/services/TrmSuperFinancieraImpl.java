@@ -8,14 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.ceiba.parqueadero.constantes.Constantes;
-import com.ceiba.parqueadero.models.serviceint.ITrmSuperFinancieraService;
+import com.ceiba.parqueadero.models.serviceint.TrmSuperFinancieraService;
 import com.ceiba.parqueadero.util.RespuestaJson;
 
 import co.com.sc.nexura.superfinanciera.action.generic.services.trm.action.TCRMServicesInterfaceProxy;
 import co.com.sc.nexura.superfinanciera.action.generic.services.trm.action.TcrmResponse;
 
 @Service
-public class TrmSuperFinancieraImpl implements ITrmSuperFinancieraService {
+public class TrmSuperFinancieraImpl implements TrmSuperFinancieraService {
 
 	public RespuestaJson obtenerTrm() throws RemoteException {
 

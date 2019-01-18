@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 import com.ceiba.parqueadero.models.dao.IVehiculoDao;
 
 import com.ceiba.parqueadero.models.entity.Vehiculo;
-import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.VehiculoService;
 import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 
 @Service
-public class VehiculoServiceImpl implements IVehiculoService {
+public class VehiculoServiceImpl implements VehiculoService {
 	ReglasParqueadero2 reglasParqueadero;
 
 	@Autowired

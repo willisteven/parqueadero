@@ -26,6 +26,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.ceiba.parqueadero.ParqueaderoApplication;
 import com.ceiba.parqueadero.constantes.Constantes;
 import com.ceiba.parqueadero.models.services.RegistroServiceImpl;
+import com.ceiba.parqueadero.objetosnegocio.VehiculoNegocio;
 
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
@@ -51,6 +52,8 @@ public class VigilanteRestControllerTest {
 	@Test
 	public void testRealizarRegistroVehiculo() throws Exception {
 		// arrange
+
+		// VehiculoNegocio jsonVehiculo= new VehiculoNegocio("carro", "XYZ123", 0);
 		JSONObject jsonVehiculo = new JSONObject();
 		jsonVehiculo.put("tipo", "carro");
 		jsonVehiculo.put("placa", "XYZ123");
@@ -86,9 +89,8 @@ public class VigilanteRestControllerTest {
 
 	@Test
 	public void testCilindrajeMotoNoEsta() throws Exception {
-		this.mockMvc.perform(get("/api/cilindraje/{placa}", "XYZ123")).andDo(print()).andExpect(status().isOk())
-				.andExpect(content().contentType("application/json;charset=UTF-8"))
-				.andExpect(jsonPath("$.Mensaje").value(Constantes.VEHICULO_NO_ESTA_PARQUEADERO));
+		this.mockMvc.perform(get("/api/cilindraje/{placa}", "XYZ123")).andDo(print()).andExpect(status().isNotFound());
+		
 
 	}
 

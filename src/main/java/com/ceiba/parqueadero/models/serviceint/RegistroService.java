@@ -5,7 +5,7 @@ import java.util.List;
 import com.ceiba.parqueadero.models.entity.Registro;
 
 
-public interface IRegistroService {
+public interface RegistroService {
 /**
  * Metodo que obtiene una lista de todos los registros
  * @return

@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,126 +15,111 @@ import org.springframework.stereotype.Service;
 import com.ceiba.parqueadero.models.entity.Registro;
 import com.ceiba.parqueadero.models.entity.TipoVehiculo;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
-import com.ceiba.parqueadero.models.serviceint.IPrecioService;
-import com.ceiba.parqueadero.models.serviceint.IRegistroService;
-import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
-import com.ceiba.parqueadero.models.serviceint.ITrmSuperFinancieraService;
-import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
-import com.ceiba.parqueadero.models.serviceint.IVigilanteService;
+import com.ceiba.parqueadero.models.exception.VigilanteInternalServerErrorException;
+import com.ceiba.parqueadero.models.exception.VigilanteNotFoundException;
+import com.ceiba.parqueadero.models.serviceint.PrecioService;
+import com.ceiba.parqueadero.models.serviceint.RegistroService;
+import com.ceiba.parqueadero.models.serviceint.TipoVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.TrmSuperFinancieraService;
+import com.ceiba.parqueadero.models.serviceint.VehiculoService;
+import com.ceiba.parqueadero.models.serviceint.VigilanteService;
+import com.ceiba.parqueadero.objetosnegocio.VehiculoNegocio;
+import com.ceiba.parqueadero.objetosnegocio.VehiculosParqueaderoNegocio;
 import com.ceiba.parqueadero.constantes.Constantes;
 import com.ceiba.parqueadero.models.entity.Precio;
 import com.ceiba.parqueadero.reglas.ReglasParqueadero2;
 import com.ceiba.parqueadero.util.RespuestaJson;
 
 @Service
-public class VigilanteServiceImpl implements IVigilanteService {
+public class VigilanteServiceImpl implements VigilanteService {
 
 	ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
 
 	private static final String PLACA = "placa";
 
 	@Autowired
-	private IRegistroService registroService;
+	private RegistroService registroService;
 
 	@Autowired
-	private IVehiculoService vehiculoService;
+	private VehiculoService vehiculoService;
 
 	@Autowired
-	private IPrecioService precioService;
+	private PrecioService precioService;
 
 	@Autowired
-	private ITipoVehiculoService tipoVehiculoService;
+	private TipoVehiculoService tipoVehiculoService;
 
 	@Autowired
-	private ITrmSuperFinancieraService trmService;
+	private TrmSuperFinancieraService trmService;
 
 	@Override
-	public RespuestaJson realizarRegistroVehiculo(JSONObject vehiculojs) {
+	public RespuestaJson realizarRegistroVehiculo(VehiculoNegocio vehiculojs) {
 		RespuestaJson respuesta = null;
-		try {
-			Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
-			respuesta = this.validacionReglasParqueadero(vehiculo);
-		} catch (Exception e) {
-			return new RespuestaJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), false, e.getMessage());
-		}
+		Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
+		respuesta = this.validacionReglasParqueadero(vehiculo);
 		return respuesta;
 
 	}
 
 	@Override
-	public RespuestaJson realizarSalidaVehiculo(JSONObject vehiculojs) {
+	public RespuestaJson realizarSalidaVehiculo(VehiculoNegocio vehiculojs) {
 		RespuestaJson respuesta = null;
-		try {
-			Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
-			respuesta = this.realizarSalida(vehiculo);
-		} catch (Exception e) {
-			return new RespuestaJson(HttpStatus.INTERNAL_SERVER_ERROR.value(), false, e.getMessage());
-
-		}
+		Vehiculo vehiculo = this.getVehiculoJson(vehiculojs);
+		respuesta = this.realizarSalida(vehiculo);
 		return respuesta;
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public List<JSONObject> getVehiculosParqueadero() {
-		List<JSONObject> listJsonObject = new ArrayList<>();
+	public List<VehiculosParqueaderoNegocio> getVehiculosParqueadero() {
+		List<VehiculosParqueaderoNegocio> listJsonObject = new ArrayList<>();
 
 		List<Registro> listRegistros = registroService.buscarRegistrosVehiculosActivos(Constantes.ACTIVO);
 		for (Registro registro : listRegistros) {
-			JSONObject json = new JSONObject();
-			json.put(PLACA, registro.getVehiculo().getPlaca());
-			json.put("tipo", registro.getVehiculo().getIdTipoVehiculo().getTipo());
+			VehiculosParqueaderoNegocio json = new VehiculosParqueaderoNegocio();
+			json.setPlaca(registro.getVehiculo().getPlaca());
+			json.setTipo(registro.getVehiculo().getIdTipoVehiculo().getTipo());
 
 			String formatoFecha = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(registro.getIngresoFecha());
 
-			json.put("ingresoFecha", formatoFecha);
-
+			json.setIngresoFecha(formatoFecha);
 			listJsonObject.add(json);
 		}
 		return listJsonObject;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject getCilindrajeMoto(String placa) {
-		JSONObject json = new JSONObject();
+	public VehiculoNegocio getCilindrajeMoto(String placa) throws VigilanteNotFoundException {
+		VehiculoNegocio json = new VehiculoNegocio();
 		Vehiculo vehiculo = this.vehiculoService.buscarCilindraje(placa, Constantes.ACTIVO);
 		if (vehiculo != null) {
-			json.put(PLACA, vehiculo.getPlaca());
-			json.put("cilindraje", vehiculo.getCilindraje());
-			json.put("tipo", vehiculo.getIdTipoVehiculo().getTipo());
+			json.setPlaca(vehiculo.getPlaca());
+			json.setCilindraje(vehiculo.getCilindraje());
+			json.setTipo(vehiculo.getIdTipoVehiculo().getTipo());
 
 		} else {
-			json.put("Mensaje", Constantes.VEHICULO_NO_ESTA_PARQUEADERO);
+			throw new VigilanteNotFoundException("Vehiculo no encontrado");
 
 		}
 		return json;
 	}
 
-	public Vehiculo getVehiculoJson(JSONObject vehiculoJs) {
+	public Vehiculo getVehiculoJson(VehiculoNegocio vehiculoJs) {
 		Vehiculo vehiculo = null;
 
-		String tipo = vehiculoJs.get("tipo").toString();
-		String placa = vehiculoJs.get(PLACA).toString();
-		String cilindrajeJson = vehiculoJs.get("cilindraje").toString();
-		int cilindraje = 0;
-		cilindraje = Integer.parseInt(cilindrajeJson);
+		String tipo = vehiculoJs.getTipo();
+		String placa = vehiculoJs.getPlaca();
+		int cilindrajeJson = vehiculoJs.getCilindraje();
 
 		TipoVehiculo tipoVehiculo = this.validarTipoVehiculo(tipo);
 		if (tipoVehiculo != null) {
-			vehiculo = new Vehiculo(0, placa, tipoVehiculo, cilindraje, Constantes.ACTIVO);
+			vehiculo = new Vehiculo(0, placa, tipoVehiculo, cilindrajeJson, Constantes.ACTIVO);
 		}
 		return vehiculo;
 	}
 
 	public TipoVehiculo validarTipoVehiculo(String tipo) {
-		TipoVehiculo tipoVehiculo = this.tipoVehiculoService.consultarTipoVehiculo(tipo);
-		if (tipoVehiculo != null) {
-			return tipoVehiculo;
-		} else {
-			return null;
-		}
+		return this.tipoVehiculoService.consultarTipoVehiculo(tipo);
 	}
 
 	public RespuestaJson realizarSalida(Vehiculo vehiculo) {
@@ -202,44 +186,52 @@ public class VigilanteServiceImpl implements IVigilanteService {
 	}
 
 	public RespuestaJson validacionReglasParqueadero(Vehiculo vehiculo) {
-		boolean yaEstaParqueadero = false;
-		boolean cupoDisponible = false;
-		boolean autorizado = false;
-		boolean isVehiculoExiste = false;
-
 		if (vehiculo != null) {
-			isVehiculoExiste = vehiculoService.vehiculoExiste(vehiculo.getPlaca(), Constantes.ACTIVO);
+			if (!this.isVehiculoExiste(vehiculo)) {
+				if (this.isCupoDisponible(vehiculo)) {
+					if (this.isAutorizado(vehiculo)) {
+						this.guardarVehiculoRegistro(vehiculo);
+					} else {
+						return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_AUTORIZADO);
+					}
+				} else {
+					return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_CUPO_DISPONIBLE);
+				}
+			} else {
+				return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.YA_ESTA_PARQUEADERO);
+			}
 		} else {
 			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_PERMITIDO);
-		}
 
-		if (!isVehiculoExiste) {
-			yaEstaParqueadero = true;
-			List<Vehiculo> listVehiculos = vehiculoService
-					.buscarPorTipoVehiculoActivo(vehiculo.getIdTipoVehiculo().getTipo(), Constantes.ACTIVO);
-			if (this.reglasParqueadero.disponibilidadVehiculo(listVehiculos.size(),
-					vehiculo.getIdTipoVehiculo().getTipo())) {
-				cupoDisponible = true;
-			}
-			if (this.reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca())) {
-				autorizado = true;
-			}
 		}
+		return new RespuestaJson(HttpStatus.OK.value(), true, Constantes.VEHICULO_INGRESADO);
+	}
 
-		if (!yaEstaParqueadero) {
-			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.YA_ESTA_PARQUEADERO);
+	public boolean isVehiculoExiste(Vehiculo vehiculo) {
+		boolean isVehiculoExiste = false;
+
+		isVehiculoExiste = vehiculoService.vehiculoExiste(vehiculo.getPlaca(), Constantes.ACTIVO);
+
+		return isVehiculoExiste;
+	}
+
+	public boolean isCupoDisponible(Vehiculo vehiculo) {
+		boolean isCupoDisponible = false;
+		List<Vehiculo> listVehiculos = vehiculoService
+				.buscarPorTipoVehiculoActivo(vehiculo.getIdTipoVehiculo().getTipo(), Constantes.ACTIVO);
+		if (this.reglasParqueadero.disponibilidadVehiculo(listVehiculos.size(),
+				vehiculo.getIdTipoVehiculo().getTipo())) {
+			isCupoDisponible = true;
 		}
+		return isCupoDisponible;
+	}
 
-		if (!cupoDisponible) {
-			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_CUPO_DISPONIBLE);
+	public boolean isAutorizado(Vehiculo vehiculo) {
+		boolean isAutorizado = false;
+		if (this.reglasParqueadero.validarPlacaLunesDomingos(vehiculo.getPlaca())) {
+			isAutorizado = true;
 		}
-
-		if (!autorizado) {
-			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_AUTORIZADO);
-		}
-		this.guardarVehiculoRegistro(vehiculo);
-
-		return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.VEHICULO_INGRESADO);
+		return isAutorizado;
 	}
 
 	public void guardarVehiculoRegistro(Vehiculo vehiculo) {
@@ -251,8 +243,13 @@ public class VigilanteServiceImpl implements IVigilanteService {
 
 	}
 
-	public RespuestaJson obtenerTrm() throws RemoteException {
-		return this.trmService.obtenerTrm();
-	}
+	public RespuestaJson obtenerTrm() throws RemoteException, VigilanteInternalServerErrorException {
+		try {
+			return this.trmService.obtenerTrm();
+		} catch (Exception e) {
+			throw new VigilanteInternalServerErrorException(
+					"Hubo un error de comunicacion con el web service de la TRM");
+		}
 
+	}
 }

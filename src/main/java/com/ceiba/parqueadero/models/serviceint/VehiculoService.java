@@ -6,7 +6,7 @@ import java.util.List;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
 
 
-public interface IVehiculoService {
+public interface VehiculoService {
 	
 	/**
 	 * Metodo que busca todos los vehiculos

@@ -22,15 +22,19 @@ import com.ceiba.parqueadero.models.entity.Precio;
 import com.ceiba.parqueadero.models.entity.Registro;
 import com.ceiba.parqueadero.models.entity.TipoTiempo;
 import com.ceiba.parqueadero.models.entity.TipoVehiculo;
-import com.ceiba.parqueadero.models.serviceint.IPrecioService;
-import com.ceiba.parqueadero.models.serviceint.IRegistroService;
-import com.ceiba.parqueadero.models.serviceint.ITipoVehiculoService;
-import com.ceiba.parqueadero.models.serviceint.IVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.PrecioService;
+import com.ceiba.parqueadero.models.serviceint.RegistroService;
+import com.ceiba.parqueadero.models.serviceint.TipoVehiculoService;
+import com.ceiba.parqueadero.models.serviceint.VehiculoService;
 import com.ceiba.parqueadero.models.services.VigilanteServiceImpl;
+import com.ceiba.parqueadero.objetosnegocio.VehiculoNegocio;
+import com.ceiba.parqueadero.objetosnegocio.VehiculosParqueaderoNegocio;
 import com.ceiba.parqueadero.testdatabuilder.RegistroTestDataBuilder;
 import com.ceiba.parqueadero.testdatabuilder.VehiculoTestDataBuilder;
 import com.ceiba.parqueadero.util.RespuestaJson;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
+import com.ceiba.parqueadero.models.exception.VigilanteInternalServerErrorException;
+import com.ceiba.parqueadero.models.exception.VigilanteNotFoundException;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -41,16 +45,16 @@ import org.mockito.MockitoAnnotations;
 @SpringBootTest
 public class VigilanteServiceTest {
 	@Mock
-	private ITipoVehiculoService tipoVehiculoService;
+	private TipoVehiculoService tipoVehiculoService;
 
 	@Mock
-	private IVehiculoService vehiculoService;
+	private VehiculoService vehiculoService;
 
 	@Mock
-	private IPrecioService precioService;
+	private PrecioService precioService;
 
 	@Mock
-	private IRegistroService registroService;
+	private RegistroService registroService;
 
 	@InjectMocks
 	private VigilanteServiceImpl vigilante;
@@ -205,12 +209,14 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testGetVehiculoJson() {
+	public void testGetVehiculoJson() throws VigilanteNotFoundException {
 		// arrange
-		JSONObject jsonVehiculo = new JSONObject();
-		jsonVehiculo.put("tipo", "carro");
-		jsonVehiculo.put("placa", "ZAS567");
-		jsonVehiculo.put("cilindraje", 0);
+		// VehiculoNegocio jsonVehiculo = new VehiculoNegocio("carro", "ZAS567", 0);
+
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("carro");
+		jsonVehiculo.setPlaca("ZAS567");
+		jsonVehiculo.setCilindraje(0);
 
 		TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
 		when(this.tipoVehiculoService.consultarTipoVehiculo("carro")).thenReturn(tipoVehiculo);
@@ -225,12 +231,13 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testgetVehiculoJsonTipoNull() {
+	public void testgetVehiculoJsonTipoNull() throws VigilanteNotFoundException {
 		// arrange
-		JSONObject jsonVehiculo = new JSONObject();
-		jsonVehiculo.put("tipo", "bus");
-		jsonVehiculo.put("placa", "ZAS589");
-		jsonVehiculo.put("cilindraje", 0);
+		// VehiculoNegocio jsonVehiculo = new VehiculoNegocio("bus", "ZAS589", 0);
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("bus");
+		jsonVehiculo.setPlaca("ZAS589");
+		jsonVehiculo.setCilindraje(0);
 
 		TipoVehiculo tipoVehiculo = null;
 		when(this.tipoVehiculoService.consultarTipoVehiculo("bus")).thenReturn(tipoVehiculo);
@@ -261,16 +268,18 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testRealizarRegistroVehiculo() {
+	public void testRealizarRegistroVehiculo() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 
 		List<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
 		RespuestaJson respuestaJson;
-		JSONObject jsonVehiculo = new JSONObject();
-		jsonVehiculo.put("tipo", "carro");
-		jsonVehiculo.put("placa", "ZAS589");
-		jsonVehiculo.put("cilindraje", 0);
+
+		// VehiculoNegocio jsonVehiculo = new VehiculoNegocio("carro", "ZAS589", 0);
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("carro");
+		jsonVehiculo.setPlaca("ZAS589");
+		jsonVehiculo.setCilindraje(0);
 		boolean isVehiculoExiste = false;
 		TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
 
@@ -290,16 +299,18 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNoPermitirIngresoSinDisponibilidad() {
+	public void testNoPermitirIngresoSinDisponibilidad() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 
 		List<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
 		RespuestaJson respuestaJson;
-		JSONObject jsonVehiculo = new JSONObject();
-		jsonVehiculo.put("tipo", "carro");
-		jsonVehiculo.put("placa", "ZAS589");
-		jsonVehiculo.put("cilindraje", 0);
+
+		// VehiculoNegocio jsonVehiculo = new VehiculoNegocio("carro", "ZAS589", 0);
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("carro");
+		jsonVehiculo.setPlaca("ZAS589");
+		jsonVehiculo.setCilindraje(0);
 		boolean isVehiculoExiste = false;
 		TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
 
@@ -321,16 +332,18 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNoPermitirIngresoYaEstaParqueadero() {
+	public void testNoPermitirIngresoYaEstaParqueadero() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 
 		List<Vehiculo> listVehiculos = new ArrayList<Vehiculo>();
 		RespuestaJson respuestaJson;
-		JSONObject jsonVehiculo = new JSONObject();
-		jsonVehiculo.put("tipo", "carro");
-		jsonVehiculo.put("placa", "ZAS589");
-		jsonVehiculo.put("cilindraje", 0);
+		// VehiculoNegocio jsonVehiculo = new VehiculoNegocio("carro", "ZAS589", 0);
+
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("carro");
+		jsonVehiculo.setPlaca("ZAS589");
+		jsonVehiculo.setCilindraje(0);
 		boolean isVehiculoExiste = true;
 		TipoVehiculo tipoVehiculo = new TipoVehiculo("carro", "Tipo vehiculo carro");
 
@@ -351,14 +364,15 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testNoPermitirIngresoTipoVehiculoInvalido() {
+	public void testNoPermitirIngresoTipoVehiculoInvalido() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 
 		RespuestaJson respuestaJson;
-		JSONObject jsonVehiculo = new JSONObject();
-		jsonVehiculo.put("tipo", "bus");
-		jsonVehiculo.put("placa", "ZAS589");
-		jsonVehiculo.put("cilindraje", 0);
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("bus");
+		jsonVehiculo.setPlaca("ZAS589");
+		jsonVehiculo.setCilindraje(0);
+
 		TipoVehiculo tipoVehiculo = null;
 
 		when(this.tipoVehiculoService.consultarTipoVehiculo("bus")).thenReturn(tipoVehiculo);
@@ -371,16 +385,17 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testRealizarSalida() {
+	public void testRealizarSalida() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		RegistroTestDataBuilder registroTest = new RegistroTestDataBuilder();
 		Registro registro = registroTest.build();
 		RespuestaJson respuestaJson;
-		JSONObject jsonVehiculo = new JSONObject();
-		jsonVehiculo.put("tipo", "carro");
-		jsonVehiculo.put("placa", "XYZ123");
-		jsonVehiculo.put("cilindraje", 0);
 
+		// VehiculoNegocio jsonVehiculo = new VehiculoNegocio("carro", "XYZ123", 0);
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("carro");
+		jsonVehiculo.setPlaca("XYZ123");
+		jsonVehiculo.setCilindraje(0);
 		when(this.registroService.buscarVehiculoPorPlaca("XYZ123")).thenReturn(registro);
 		when(this.tipoVehiculoService.consultarTipoVehiculo("carro"))
 				.thenReturn(registro.getVehiculo().getIdTipoVehiculo());
@@ -403,14 +418,15 @@ public class VigilanteServiceTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testRealizarSalidaNoEstaParqueadero() {
+	public void testRealizarSalidaNoEstaParqueadero() throws VigilanteInternalServerErrorException, VigilanteNotFoundException {
 		// arrange
 		Registro registro = null;
 		RespuestaJson respuestaJson;
-		JSONObject jsonVehiculo = new JSONObject();
-		jsonVehiculo.put("tipo", "carro");
-		jsonVehiculo.put("placa", "XYZ123");
-		jsonVehiculo.put("cilindraje", 0);
+		// VehiculoNegocio jsonVehiculo = new VehiculoNegocio("carro", "XYZ123", 0);
+		VehiculoNegocio jsonVehiculo = new VehiculoNegocio();
+		jsonVehiculo.setTipo("carro");
+		jsonVehiculo.setPlaca("XYZ123");
+		jsonVehiculo.setCilindraje(0);
 
 		when(this.registroService.buscarVehiculoPorPlaca("XYZ123")).thenReturn(registro);
 		when(this.tipoVehiculoService.consultarTipoVehiculo("carro"))
@@ -423,7 +439,7 @@ public class VigilanteServiceTest {
 
 	@Test
 	public void testGetVehiculosParqueadero() {
-		List<JSONObject> listJson = new ArrayList<JSONObject>();
+		List<VehiculosParqueaderoNegocio> listJson = new ArrayList<>();
 		List<Registro> listRegistro = new ArrayList<Registro>();
 		RegistroTestDataBuilder registroTest = new RegistroTestDataBuilder();
 		Registro registro = registroTest.build();
@@ -437,13 +453,13 @@ public class VigilanteServiceTest {
 
 		// assert
 
-		Assert.assertEquals("XYZ123", listJson.get(0).get("placa"));
+		Assert.assertEquals("XYZ123", listJson.get(0).getPlaca());
 
 	}
 
 	@Test
-	public void testGetCilindrajeMoto() {
-		JSONObject objectJson = new JSONObject();
+	public void testGetCilindrajeMoto() throws VigilanteNotFoundException {
+		VehiculoNegocio objectJson = new VehiculoNegocio();
 		VehiculoTestDataBuilder vehiculoTest = new VehiculoTestDataBuilder();
 		vehiculoTest.withPlaca("XYZ123");
 		Vehiculo vehiculo = vehiculoTest.build();
@@ -455,7 +471,7 @@ public class VigilanteServiceTest {
 
 		// assert
 
-		Assert.assertEquals("XYZ123", objectJson.get("placa"));
+		Assert.assertEquals("XYZ123", objectJson.getPlaca());
 
 	}
 

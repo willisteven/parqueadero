@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ceiba.parqueadero.models.dao.IRegistroDao;
 import com.ceiba.parqueadero.models.entity.Registro;
 
-import com.ceiba.parqueadero.models.serviceint.IRegistroService;
+import com.ceiba.parqueadero.models.serviceint.RegistroService;
 
 @Service
-public class RegistroServiceImpl implements IRegistroService{
+public class RegistroServiceImpl implements RegistroService{
 
 	@Autowired
 	private IRegistroDao registroDao;
