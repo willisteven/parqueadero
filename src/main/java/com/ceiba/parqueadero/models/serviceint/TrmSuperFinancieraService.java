@@ -2,7 +2,6 @@ package com.ceiba.parqueadero.models.serviceint;
 
 import java.rmi.RemoteException;
 
-import com.ceiba.parqueadero.models.exception.VigilanteInternalServerErrorException;
 import com.ceiba.parqueadero.util.RespuestaJson;
 
 public interface TrmSuperFinancieraService {
@@ -11,6 +10,6 @@ public interface TrmSuperFinancieraService {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public RespuestaJson obtenerTrm() throws RemoteException,VigilanteInternalServerErrorException;
+	public RespuestaJson obtenerTrm() throws RemoteException;
 
 }

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import com.ceiba.parqueadero.models.entity.Registro;
 import com.ceiba.parqueadero.models.entity.TipoVehiculo;
 import com.ceiba.parqueadero.models.entity.Vehiculo;
-import com.ceiba.parqueadero.models.exception.VigilanteInternalServerErrorException;
+
 import com.ceiba.parqueadero.models.exception.VigilanteNotFoundException;
 import com.ceiba.parqueadero.models.serviceint.PrecioService;
 import com.ceiba.parqueadero.models.serviceint.RegistroService;
@@ -34,7 +34,6 @@ import com.ceiba.parqueadero.util.RespuestaJson;
 public class VigilanteServiceImpl implements VigilanteService {
 
 	ReglasParqueadero2 reglasParqueadero = new ReglasParqueadero2();
-
 
 	@Autowired
 	private RegistroService registroService;
@@ -185,30 +184,24 @@ public class VigilanteServiceImpl implements VigilanteService {
 	}
 
 	public RespuestaJson validacionReglasParqueadero(Vehiculo vehiculo) {
-		if (vehiculo != null) {
-			if (!this.isVehiculoExiste(vehiculo)) {
-				if (this.isCupoDisponible(vehiculo)) {
-					if (this.isAutorizado(vehiculo)) {
-						this.guardarVehiculoRegistro(vehiculo);
-					} else {
-						return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_AUTORIZADO);
-					}
-				} else {
-					return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_CUPO_DISPONIBLE);
-				}
-			} else {
-				return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.YA_ESTA_PARQUEADERO);
-			}
-		} else {
+		if (vehiculo == null) {
 			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_PERMITIDO);
-
 		}
+		if (this.isVehiculoExiste(vehiculo)) {
+			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.YA_ESTA_PARQUEADERO);
+		}
+		if (!this.isCupoDisponible(vehiculo)) {
+			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_CUPO_DISPONIBLE);
+		}
+		if (!this.isAutorizado(vehiculo)) {
+			return new RespuestaJson(HttpStatus.OK.value(), false, Constantes.NO_AUTORIZADO);
+		}
+		this.guardarVehiculoRegistro(vehiculo);
 		return new RespuestaJson(HttpStatus.OK.value(), true, Constantes.VEHICULO_INGRESADO);
 	}
 
 	public boolean isVehiculoExiste(Vehiculo vehiculo) {
 		boolean isVehiculoExiste = false;
-
 		isVehiculoExiste = vehiculoService.vehiculoExiste(vehiculo.getPlaca(), Constantes.ACTIVO);
 
 		return isVehiculoExiste;
@@ -242,13 +235,8 @@ public class VigilanteServiceImpl implements VigilanteService {
 
 	}
 
-	public RespuestaJson obtenerTrm() throws RemoteException, VigilanteInternalServerErrorException {
-		try {
-			return this.trmService.obtenerTrm();
-		} catch (Exception e) {
-			throw new VigilanteInternalServerErrorException(
-					"Hubo un error de comunicacion con el web service de la TRM");
-		}
+	public RespuestaJson obtenerTrm() throws RemoteException {
+		return this.trmService.obtenerTrm();
 
 	}
 }

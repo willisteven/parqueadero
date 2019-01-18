@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.ceiba.parqueadero.models.exception.VigilanteInternalServerErrorException;
+
 import com.ceiba.parqueadero.models.exception.VigilanteNotFoundException;
 import com.ceiba.parqueadero.models.serviceint.VigilanteService;
 import com.ceiba.parqueadero.objetosnegocio.VehiculoNegocio;
@@ -54,12 +54,7 @@ public class VigilanteRestController {
 
 	@GetMapping(path = "/trmsuperfinanciera", produces = "application/json")
 	public RespuestaJson valorTRM() throws RemoteException {
-		try {
-			return vigilanteService.obtenerTrm();
-		} catch (VigilanteInternalServerErrorException ex) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-					"Hubo un error de comunicacion con el web service de la TRM", ex);
+		return vigilanteService.obtenerTrm();
 
-		}
 	}
 }

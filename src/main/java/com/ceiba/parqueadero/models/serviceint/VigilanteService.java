@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 
 import java.util.List;
 
-import com.ceiba.parqueadero.models.exception.VigilanteInternalServerErrorException;
+
 import com.ceiba.parqueadero.models.exception.VigilanteNotFoundException;
 import com.ceiba.parqueadero.objetosnegocio.VehiculoNegocio;
 import com.ceiba.parqueadero.objetosnegocio.VehiculosParqueaderoNegocio;
@@ -49,5 +49,5 @@ public interface VigilanteService {
 	 * @return
 	 * @throws RemoteException
 	 */
-	public RespuestaJson obtenerTrm() throws RemoteException, VigilanteInternalServerErrorException;
+	public RespuestaJson obtenerTrm() throws RemoteException;
 }
